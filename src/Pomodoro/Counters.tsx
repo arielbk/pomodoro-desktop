@@ -6,20 +6,14 @@ import TimersContext from './TimersContext';
 export default function Counters() {
   return (
     <TimersContext.Consumer>
-      {context => (
+      {(context) => (
         <span>
           <Pomodoros>{context.state.pomodoros}</Pomodoros>
           <Group>
-            <Goal>
-              of
-              {' '}
-              {context.state.goal}
-            </Goal>
+            <Goal>of {context.state.goal}</Goal>
             <Text>
               pomodoros
-              <br />
-              {' '}
-              completed
+              <br /> completed
             </Text>
           </Group>
         </span>
@@ -33,7 +27,7 @@ const Pomodoros = styled.div`
   font-size: 6em;
   color: #999;
   font-weight: 200;
-  letter-spacing: -.05em;
+  letter-spacing: -0.05em;
 `;
 
 const Group = styled.div`
@@ -48,6 +42,6 @@ const Goal = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: .9em;
+  font-size: 0.9em;
   text-align: right;
 `;

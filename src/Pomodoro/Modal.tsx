@@ -1,43 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Transition, animated, config } from 'react-spring';
-import Portal from '../Utilities/Portal';
+import { AnimatePresence, motion } from 'framer-motion';
+import Portal from './Portal';
 
-const Modal = (props) => {
-  const {
-    children, toggle, on, from,
-  } = props;
+interface Props {
+  children: React.ReactNode;
+  toggle: () => void;
+  on: boolean;
+  from: 'left' | 'right';
+}
+
+const Modal: React.FC<Props> = ({ children, toggle, on, from }) => {
+  const initialStyle = { opacity: 0, x: `${from === 'left' ? '-' : ''}300px` };
   return (
     <Portal>
-      <Transition
-        native
-        config={config.gentle}
-        from={{ opacity: 0, x: `${from === 'left' ? '-' : ''}300` }}
-        enter={{ opacity: 1, x: '0' }}
-        leave={{ opacity: 0, x: `${from === 'left' ? '-' : ''}300` }}
-      >
-        {on
-          && (styles => (
+      <AnimatePresence>
+        {on && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <ModalWrapper>
               <ModalContent
-                style={{
-                  transform: styles.x.interpolate(x => `translate3d(${Math.floor(x)}px, 0, 0)`),
-                  opacity: styles.opacity,
-                  ...styles,
-                }}
+                initial={initialStyle}
+                animate={on ? { opacity: 1, x: 0 } : initialStyle}
+                exit={initialStyle}
               >
                 {children}
               </ModalContent>
               <CloseButton onClick={toggle}>✕</CloseButton>
-              <Background
-                onClick={toggle}
-                style={{
-                  opacity: styles.opacity,
-                }}
-              />
+              {on && <Background onClick={toggle} />}
             </ModalWrapper>
-          ))}
-      </Transition>
+            {/* ))} */}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Portal>
   );
 };
@@ -48,6 +46,7 @@ const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 
   position: absolute;
   top: 0;
@@ -69,8 +68,8 @@ const CloseButton = styled.div`
   }
 `;
 
-const ModalContent = styled(animated.div)`
-  z-index: 100;
+const ModalContent = styled(motion.div)`
+  z-index: 1001;
   background: var(--faintgrey);
   color: var(--lightgrey);
   min-width: 320px;
@@ -86,7 +85,7 @@ const ModalContent = styled(animated.div)`
   }
 `;
 
-const Background = styled(animated.div)`
+const Background = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;

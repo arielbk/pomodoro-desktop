@@ -3,32 +3,26 @@ import TimersContext from '../TimersContext';
 import { SettingsItem, IncrementDecrement } from './Styles';
 
 // settings component - set a pomodoro goal
-const LongBreakSetter = () => (
-  <TimersContext>
-    {context => (
+const GoalSetter = () => (
+  <TimersContext.Consumer>
+    {(context) => (
       <SettingsItem>
         <IncrementDecrement
-          timer="longBreak"
-          onMouseDown={() => context.handleSetChange(-1)}
+          timer="work"
+          onMouseDown={() => context.handleGoalChange(-1)}
         >
           –
         </IncrementDecrement>
-
-        <div>
-          Every
-          {' '}
-          {context.state.pomodoroSet}
-        </div>
+        <div>Goal : {context.state.goal}</div>
         <IncrementDecrement
-          timer="longBreak"
-          onMouseDown={() => context.handleSetChange(+1)}
+          timer="work"
+          onMouseDown={() => context.handleGoalChange(+1)}
         >
           +
         </IncrementDecrement>
-
       </SettingsItem>
     )}
-  </TimersContext>
+  </TimersContext.Consumer>
 );
 
-export default LongBreakSetter;
+export default GoalSetter;

@@ -5,18 +5,19 @@
 
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import TimersContext from './TimersContext';
+import { FaPlay, FaPause } from 'react-icons/fa';
+import TimersContext, { TimersContextType, TimerName } from './TimersContext';
 
-class ButtonProgress extends Component {
+class ButtonProgress extends Component<{ context: TimersContextType }> {
   componentDidMount = () => {
     document.addEventListener('keyup', this.handleKeyPress);
-  }
+  };
 
   componentWillUnmount = () => {
     document.removeEventListener('keyup', this.handleKeyPress);
-  }
+  };
 
-  handleKeyPress = (e) => {
+  handleKeyPress = (e: KeyboardEvent) => {
     const { context } = this.props; // eslint-disable-line react/prop-types
     const { handlePlayPause, handleReset } = context;
     if (e.key === ' ') {
@@ -24,7 +25,7 @@ class ButtonProgress extends Component {
     } else if (e.key === 'Escape') {
       handleReset();
     }
-  }
+  };
 
   render() {
     const { context } = this.props;
@@ -36,13 +37,12 @@ class ButtonProgress extends Component {
           <ButtonProgressInner
             paused={context.state.activeTimer.paused}
             timer={context.state.activeTimer.name}
-            onClick={context.handlePlayPause}
+            onClick={() => {
+              console.log('click!');
+              context.handlePlayPause();
+            }}
           >
-            <i
-              className={context.state.activeTimer.paused
-                ? 'fas fa-play'
-                : 'fas fa-pause'}
-            />
+            {context.state.activeTimer.paused ? <FaPlay /> : <FaPause />}
           </ButtonProgressInner>
         </StyledButtonProgress>
 
@@ -50,19 +50,18 @@ class ButtonProgress extends Component {
           height="140"
           width="140"
           timer={context.state.activeTimer.name}
-          progress={
-            context.state.activeTimer.timeRemaining
-              / context.state.activeTimer.duration
-          }
         >
           <circle
-            strokeDashoffset={Math.floor(10 * (
-              context.state.activeTimer.timeRemaining
-              / context.state.activeTimer.duration * 395.8))
-              / 10}
+            strokeDashoffset={
+              Math.floor(
+                10 *
+                  ((context.state.activeTimer.timeRemaining /
+                    context.state.activeTimer.duration) *
+                    395.8)
+              ) / 10
+            }
           />
         </ProgressCircle>
-
       </ButtonsContainer>
     );
   }
@@ -70,7 +69,7 @@ class ButtonProgress extends Component {
 
 const WithContext = () => (
   <TimersContext.Consumer>
-    {context => <ButtonProgress context={context} />}
+    {(context) => <ButtonProgress context={context} />}
   </TimersContext.Consumer>
 );
 
@@ -95,7 +94,7 @@ const ResetButton = styled.div`
   }
 `;
 
-const StyledButtonProgress = styled.div`
+const StyledButtonProgress = styled.div<{ timer: TimerName }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,38 +103,42 @@ const StyledButtonProgress = styled.div`
   height: 140px;
   font-size: 64px;
   border-radius: 50%;
-  background: var(--dark-${props => props.timer});
+  background: ${(props) => 'var(--dark-' + props.timer});
 
   &:hover {
     cursor: pointer;
   }
-  `;
+`;
 
-const ButtonProgressInner = styled.div`
+const ButtonProgressInner = styled.button<{
+  timer: TimerName;
+  paused: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+  cursor: pointer;
+  border: none;
+
   background: var(--darkgrey);
-  color: var(--light-${props => props.timer});
+  color:  ${(props) => 'var(--light-' + props.timer});
   width: 112px;
   height: 112px;
   border-radius: 100%;
   font-size: 1em;
-  & i {
-    z-index:10;
-    ${props => props.paused && 'padding-left: 12px'}
+  & {
+    z-index: 1;
+    ${(props) => props.paused && 'padding-left: 12px'}
   }
 `;
 
-const ProgressCircle = styled.svg`
+const ProgressCircle = styled.svg<{ timer: TimerName }>`
   position: absolute;
-  left:0;
-  top:0;
+  left: 0;
+  top: 0;
 
   & circle {
-    z-index: 9;
-    stroke: var(--light-${props => props.timer});
+    stroke:  ${(props) => 'var(--light-' + props.timer});
     stroke-width: 14;
     fill: transparent;
     r: 63;

@@ -1,8 +1,6 @@
 import React from 'react';
 
-import {
-  Container, Title, Group, Content,
-} from './Styles';
+import { Container, Title, Group, Content } from './Styles';
 
 import GoalSetter from './GoalSetter';
 import LongBreakSetter from './LongBreakSetter';
@@ -12,18 +10,17 @@ import TimeSetter from './TimeSetter';
 // container and title for timers' settings component
 const Settings = () => (
   <Container>
-
     <Group timer="work">
-      <Title timer="work">Work</Title>
+      <Title>Work</Title>
       <Content>
         <TimeSetter timerName="work" />
         <SoundSetter timerName="work" />
-        <GoalSetter timerName="work" />
+        <GoalSetter />
       </Content>
     </Group>
 
     <Group timer="break">
-      <Title timer="break">Break</Title>
+      <Title>Break</Title>
       <Content>
         <TimeSetter timerName="break" />
         <SoundSetter timerName="break" />
@@ -31,14 +28,13 @@ const Settings = () => (
     </Group>
 
     <Group timer="longBreak">
-      <Title timer="longBreak">Long Break</Title>
+      <Title>Long Break</Title>
       <Content>
         <TimeSetter timerName="longBreak" />
         <SoundSetter timerName="longBreak" />
-        <LongBreakSetter timerName="longBreak" />
+        <LongBreakSetter />
       </Content>
     </Group>
-
   </Container>
 );
 

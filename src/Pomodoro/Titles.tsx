@@ -1,25 +1,17 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
-import TimersContext from './TimersContext';
+import TimersContext, { TimerName } from './TimersContext';
 
 const Titles = () => (
-  <TimersContext>
-    {context => (
+  <TimersContext.Consumer>
+    {(context) => (
       <Fragment>
         <Container>
-          <Title
-            active={context.state.activeTimer.name === 'work'}
-          >
-            Work
-          </Title>
-          <Title
-            active={context.state.activeTimer.name === 'break'}
-          >
+          <Title active={context.state.activeTimer.name === 'work'}>Work</Title>
+          <Title active={context.state.activeTimer.name === 'break'}>
             Break
           </Title>
-          <Title
-            active={context.state.activeTimer.name === 'longBreak'}
-          >
+          <Title active={context.state.activeTimer.name === 'longBreak'}>
             Long Break
           </Title>
         </Container>
@@ -39,7 +31,7 @@ const Titles = () => (
         </Container>
       </Fragment>
     )}
-  </TimersContext>
+  </TimersContext.Consumer>
 );
 
 export default Titles;
@@ -50,7 +42,7 @@ const Container = styled.div`
   align-items: flex-start;
 `;
 
-const Title = styled.div`
+const Title = styled.div<{ active: boolean }>`
   text-transform: lowercase;
   font-family: 'Rubik';
   font-size: 1.5rem;
@@ -59,20 +51,21 @@ const Title = styled.div`
   width: 30%;
   height: 45px;
   text-align: center;
-  padding: .4em;
+  padding: 0.4em;
   position: relative;
-  color: var(--${props => (props.active ? 'light' : 'med')}grey);
+  color: var(${(props) => (props.active ? '--light' : '--med')}grey);
 
   @media (max-width: 700px) {
     width: 100%;
   }
 `;
 
-const Underline = styled.div`
+const Underline = styled.div<{ active: boolean; timer: TimerName }>`
   width: 30%;
   height: 5px;
   border-radius: 5px;
-  background: var(--${props => (props.active ? `light-${props.timer});` : 'faintgrey);')}
+  background: var(--${(props) =>
+    props.active ? `light-${props.timer});` : 'faintgrey);'}
 
     @media (max-width: 700px) {
     width: 100%;

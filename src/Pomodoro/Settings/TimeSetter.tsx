@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import TimersContext from '../TimersContext';
+import TimersContext, { TimerName } from '../TimersContext';
 import { SettingsItem, IncrementDecrement } from './Styles';
 
-// settings component - set a time
-const TimeSetter = (props) => {
-  const { timerName } = props;
+interface Props {
+  timerName: TimerName;
+}
+
+const TimeSetter: React.FC<Props> = ({ timerName }) => {
   return (
     <TimersContext.Consumer>
-      {context => (
+      {(context) => (
         <SettingsItem>
           <IncrementDecrement
             timer={timerName}
@@ -18,9 +19,7 @@ const TimeSetter = (props) => {
           </IncrementDecrement>
 
           <div>
-            {Math.floor(context.state[timerName].duration / 60 / 1000)}
-            {' '}
-            min
+            {Math.floor(context.state[timerName].duration / 60 / 1000)} min
           </div>
 
           <IncrementDecrement
@@ -36,7 +35,3 @@ const TimeSetter = (props) => {
 };
 
 export default TimeSetter;
-
-TimeSetter.propTypes = {
-  timerName: PropTypes.string.isRequired,
-};

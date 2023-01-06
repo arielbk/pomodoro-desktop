@@ -1,73 +1,62 @@
-import React, { Fragment } from 'react';
+import '@fontsource/roboto';
+import '@fontsource/rubik';
+import { FaCog, FaQuestion } from 'react-icons/fa';
 import styled from 'styled-components';
-import { TimersProvider } from './TimersContext';
-
-import Toggle from '../Utilities/Toggle';
-import Modal from '../Elements/Modal';
-
+import About from './About';
 import ButtonProgress from './ButtonProgress';
+import Counters from './Counters';
+import './global.css';
+import Modal from './Modal';
 import Settings from './Settings';
 import ShowTime from './ShowTime';
-import Counters from './Counters';
-import About from './About';
+import { TimersProvider } from './TimersContext';
 import Titles from './Titles';
+import useToggle from './useToggle';
 
+const View = () => {
+  const [aboutOpen, toggleAboutOpen] = useToggle();
+  const [settingsOpen, toggleSettingsOpen] = useToggle();
+  return (
+    <TimersProvider>
+      <Container>
+        <MainHeader>Pomodoro Timer</MainHeader>
+        <Divider />
+        <MainContent>
+          {/* actual (non-styled) components */}
+          <ButtonProgress />
+          <ShowTime />
+          <Counters />
+        </MainContent>
 
-const View = () => (
-  <TimersProvider>
-    <App>
-      <MainHeader>Pomodoro Timer</MainHeader>
-      <Divider />
-      <MainContent>
+        <Titles />
 
-        {/* actual (non-styled) components */}
-        <ButtonProgress />
-        <ShowTime />
-        <Counters />
+        <AboutToggle onClick={toggleAboutOpen}>
+          <FaQuestion />
+        </AboutToggle>
+        <Modal toggle={toggleAboutOpen} on={aboutOpen} from="left">
+          <About />
+        </Modal>
 
-      </MainContent>
-
-      <Titles />
-
-      <Toggle>
-        {({ on, toggle }) => (
-          <Fragment>
-            <AboutToggle onClick={toggle}>
-              <i className="fas fa-question" />
-            </AboutToggle>
-            <Modal toggle={toggle} on={on} from="left">
-              <About />
-            </Modal>
-          </Fragment>
-        )}
-      </Toggle>
-
-      <Toggle>
-        {({ on, toggle }) => (
-          <Fragment>
-            <SettingsToggle onClick={toggle}>
-              <i className="fas fa-cog" />
-            </SettingsToggle>
-            <Modal toggle={toggle} on={on} from="right">
-              <Settings />
-            </Modal>
-          </Fragment>
-        )}
-      </Toggle>
-
-    </App>
-  </TimersProvider>
-);
+        <SettingsToggle onClick={toggleSettingsOpen}>
+          <FaCog />
+        </SettingsToggle>
+        <Modal toggle={toggleSettingsOpen} on={settingsOpen} from="right">
+          <Settings />
+        </Modal>
+      </Container>
+    </TimersProvider>
+  );
+};
 
 export default View;
 
-const App = styled.div`
+const Container = styled.div`
   position: relative;
   max-width: 940px;
   background: var(--darkgrey);
-  box-shadow: 0 12px 50px rgba(0,0,0,.6);
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.6);
   border-radius: 5px;
-  margin: 30px auto 60px auto;
+  margin: auto;
   padding: 40px 60px 80px 60px;
 
   @media (max-width: 780px) {
@@ -111,7 +100,7 @@ const StyledToggle = styled.div`
   top: 1.5em;
   background: var(--medgrey);
   color: var(--darkgrey);
-  padding: .2em;
+  padding: 0.2em;
   border-radius: 50%;
   width: 48px;
   height: 48px;

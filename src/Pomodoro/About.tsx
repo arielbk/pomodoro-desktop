@@ -11,9 +11,10 @@ const About = () => (
       It&#39;s simple and effective for flow, focus and productivity.
     </p>
     <p>
-      The Pomodoro Technique has been around since the 1980s,
-      and was developed by Francesco Cirillo. Find out more about it on the
+      The Pomodoro Technique has been around since the 1980s, and was developed
+      by Francesco Cirillo. Find out more about it on the
       <a href="https://en.wikipedia.org/wiki/Pomodoro_Technique">
+        {' '}
         Wikipedia page
       </a>
       .
