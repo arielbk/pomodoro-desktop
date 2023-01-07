@@ -3,8 +3,9 @@ import Bell from './sounds/bell.mp3';
 import Triumph from './sounds/triumph.mp3';
 import LevelUp from './sounds/levelup.mp3';
 import Winning from './sounds/winning.mp3';
+import { register } from '@tauri-apps/api/globalShortcut';
 
-export type TimerName = 'work' | 'break' | 'longBreak';
+export type TimerName = 'focus' | 'break' | 'longBreak';
 export type SoundType = 'Bell' | 'Triumph' | 'LevelUp' | 'Winning';
 export type TimerType = {
   name: TimerName;
@@ -14,12 +15,12 @@ export type TimerType = {
 
 export const initialState = {
   activeTimer: {
-    name: 'work' as TimerName,
+    name: 'focus' as TimerName,
     timeRemaining: 1500000,
     duration: 1500000, // so that settings changes does not alter things - freeze timer duration
     paused: true,
     untilTime: 0,
-    intervalID: 0,
+    intervalID: 0 as unknown as NodeJS.Timer,
   },
 
   showSettings: false,
@@ -35,9 +36,9 @@ export const initialState = {
   // sound names to assign to a timer
   sounds: ['Bell', 'Triumph', 'LevelUp', 'Winning'] as SoundType[],
 
-  // WORK TIMER
-  work: {
-    name: 'work',
+  // focus TIMER
+  focus: {
+    name: 'focus',
     duration: 1500000, // mseconds - 25 min default
     sound: 'Triumph' as SoundType,
   } as TimerType,
@@ -104,6 +105,11 @@ export class TimersProvider extends Component<
   componentDidMount = () => {
     document.addEventListener('mousedown', this.setMouseDown);
     document.addEventListener('mouseup', this.setMouseUp);
+    register('Control+Shift+Space', () => {
+      // TODO: web audio api -- load into memory and play
+      this.LevelUp?.play();
+      this.handlePlayPause();
+    });
   };
 
   componentWillUnmount = () => {
@@ -157,7 +163,7 @@ export class TimersProvider extends Component<
     this.playSound(this.state[activeTimer.name].sound);
 
     let nextTimer: TimerType;
-    if (activeTimer.name === 'work') {
+    if (activeTimer.name === 'focus') {
       const pomodoros = this.state.pomodoros + 1;
       this.setState({ pomodoros });
       if (pomodoros % this.state.pomodoroSet === 0) {
@@ -166,7 +172,7 @@ export class TimersProvider extends Component<
         nextTimer = { ...this.state.break };
       }
     } else {
-      nextTimer = { ...this.state.work };
+      nextTimer = { ...this.state.focus };
     }
 
     activeTimer.name = nextTimer.name;
@@ -201,16 +207,16 @@ export class TimersProvider extends Component<
   //                                           handle reset
   // --------------------------------------------------------------------------
 
-  // default back to work timer
+  // default back to focus timer
   handleReset = () => {
     const activeTimer = { ...this.state.activeTimer };
 
     // end any running timer function
     clearInterval(activeTimer.intervalID);
 
-    const { duration } = this.state.work;
+    const { duration } = this.state.focus;
 
-    activeTimer.name = 'work';
+    activeTimer.name = 'focus';
     activeTimer.timeRemaining = duration;
     activeTimer.duration = duration;
     activeTimer.paused = true;

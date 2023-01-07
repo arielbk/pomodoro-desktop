@@ -10,11 +10,11 @@ import TimeSetter from './TimeSetter';
 // container and title for timers' settings component
 const Settings = () => (
   <Container>
-    <Group timer="work">
-      <Title>Work</Title>
+    <Group timer="focus">
+      <Title>Focus</Title>
       <Content>
-        <TimeSetter timerName="work" />
-        <SoundSetter timerName="work" />
+        <TimeSetter timerName="focus" />
+        <SoundSetter timerName="focus" />
         <GoalSetter />
       </Content>
     </Group>

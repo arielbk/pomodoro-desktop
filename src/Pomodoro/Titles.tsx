@@ -7,7 +7,9 @@ const Titles = () => (
     {(context) => (
       <Fragment>
         <Container>
-          <Title active={context.state.activeTimer.name === 'work'}>Work</Title>
+          <Title active={context.state.activeTimer.name === 'focus'}>
+            focus
+          </Title>
           <Title active={context.state.activeTimer.name === 'break'}>
             Break
           </Title>
@@ -17,8 +19,8 @@ const Titles = () => (
         </Container>
         <Container>
           <Underline
-            timer="work"
-            active={context.state.activeTimer.name === 'work'}
+            timer="focus"
+            active={context.state.activeTimer.name === 'focus'}
           />
           <Underline
             timer="break"

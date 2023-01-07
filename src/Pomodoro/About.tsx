@@ -6,7 +6,7 @@ const About = () => (
       The Pomodoro Technique is a tool for time management and productivity.
     </p>
     <p>
-      Work for one &#39;pomodoro&#39; (one set interval — usually 25 minutes)
+      focus for one &#39;pomodoro&#39; (one set interval — usually 25 minutes)
       and then have a short break. After 4 of these, go and have a long break.
       It&#39;s simple and effective for flow, focus and productivity.
     </p>

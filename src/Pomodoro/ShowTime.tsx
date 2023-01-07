@@ -10,7 +10,7 @@ const ShowTime: React.FC<{ context: TimersContextType }> = ({ context }) => {
 
   const mins = String(Math.floor(timeRemaining / 1000 / 60)).padStart(2, '0');
   const secs = String(Math.floor((timeRemaining / 1000) % 60)).padStart(2, '0');
-  const msecs = String(Math.floor(timeRemaining % 1000)).padStart(3, '0');
+  const msecs = String(Math.floor((timeRemaining % 1000) / 100));
 
   document.title = `${mins}:${secs} - pomodoro timer`;
   return (

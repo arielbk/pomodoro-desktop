@@ -19,8 +19,8 @@ const View = () => {
   return (
     <TimersProvider>
       <Container>
-        <MainHeader>Pomodoro Timer</MainHeader>
-        <Divider />
+        {/* <MainHeader>Pomodori</MainHeader> */}
+        {/* <Divider /> */}
         <MainContent>
           {/* actual (non-styled) components */}
           <ButtonProgress />

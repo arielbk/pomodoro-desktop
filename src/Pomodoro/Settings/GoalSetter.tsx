@@ -8,14 +8,14 @@ const GoalSetter = () => (
     {(context) => (
       <SettingsItem>
         <IncrementDecrement
-          timer="work"
+          timer="focus"
           onMouseDown={() => context.handleGoalChange(-1)}
         >
           –
         </IncrementDecrement>
         <div>Goal : {context.state.goal}</div>
         <IncrementDecrement
-          timer="work"
+          timer="focus"
           onMouseDown={() => context.handleGoalChange(+1)}
         >
           +

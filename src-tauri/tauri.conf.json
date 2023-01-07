@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "pomodoro-desktop",
+    "productName": "Pomodori",
     "version": "0.0.0"
   },
   "tauri": {
@@ -28,7 +28,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "pomodori",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -55,10 +55,11 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 580,
+        "height": 460,
         "resizable": false,
-        "title": "pomodoro-desktop",
-        "width": 820
+        "title": "Pomodori",
+        "width": 840,
+        "theme": "Dark"
       }
     ]
   }

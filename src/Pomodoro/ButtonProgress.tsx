@@ -89,7 +89,7 @@ const ResetButton = styled.div`
   font-weight: 900;
 
   &:hover {
-    color: var(--light-work);
+    color: var(--light-focus);
     cursor: pointer;
   }
 `;

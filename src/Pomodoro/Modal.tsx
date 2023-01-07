@@ -63,7 +63,7 @@ const CloseButton = styled.div`
   font-size: 5rem;
 
   &:hover {
-    color: var(--light-work);
+    color: var(--light-focus);
     cursor: pointer;
   }
 `;

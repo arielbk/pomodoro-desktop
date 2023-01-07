@@ -4,8 +4,8 @@
   --medgrey: #3b3b3b;
   --darkgrey: #202020;
 
-  --light-work: #cf4547;
-  --dark-work: #50191a;
+  --light-focus: #cf4547;
+  --dark-focus: #50191a;
 
   --light-break: #e2d34e;
   --dark-break: #836f40;
@@ -28,6 +28,9 @@ html {
 }
 
 body {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
   flex: 1;
   margin: 0;
   padding: 0;
