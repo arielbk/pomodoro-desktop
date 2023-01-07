@@ -5,7 +5,7 @@
 
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaPause } from 'react-icons/fa';
+import { IoMdPlay, IoMdPause } from 'react-icons/io';
 import TimersContext, { TimersContextType, TimerName } from './TimersContext';
 
 class ButtonProgress extends Component<{ context: TimersContextType }> {
@@ -34,34 +34,30 @@ class ButtonProgress extends Component<{ context: TimersContextType }> {
         <ResetButton onClick={context.handleReset}>✕</ResetButton>
 
         <StyledButtonProgress timer={context.state.activeTimer.name}>
+          <ProgressCircle
+            height="140"
+            width="140"
+            timer={context.state.activeTimer.name}
+          >
+            <circle
+              strokeDashoffset={
+                Math.floor(
+                  10 *
+                    ((context.state.activeTimer.timeRemaining /
+                      context.state.activeTimer.duration) *
+                      395.8)
+                ) / 10
+              }
+            />
+          </ProgressCircle>
           <ButtonProgressInner
             paused={context.state.activeTimer.paused}
             timer={context.state.activeTimer.name}
-            onClick={() => {
-              console.log('click!');
-              context.handlePlayPause();
-            }}
+            onClick={context.handlePlayPause}
           >
-            {context.state.activeTimer.paused ? <FaPlay /> : <FaPause />}
+            {context.state.activeTimer.paused ? <IoMdPlay /> : <IoMdPause />}
           </ButtonProgressInner>
         </StyledButtonProgress>
-
-        <ProgressCircle
-          height="140"
-          width="140"
-          timer={context.state.activeTimer.name}
-        >
-          <circle
-            strokeDashoffset={
-              Math.floor(
-                10 *
-                  ((context.state.activeTimer.timeRemaining /
-                    context.state.activeTimer.duration) *
-                    395.8)
-              ) / 10
-            }
-          />
-        </ProgressCircle>
       </ButtonsContainer>
     );
   }
@@ -127,8 +123,7 @@ const ButtonProgressInner = styled.button<{
   border-radius: 100%;
   font-size: 1em;
   & {
-    z-index: 1;
-    ${(props) => props.paused && 'padding-left: 12px'}
+    ${(props) => props.paused && 'padding-left: 14px'}
   }
 `;
 
@@ -136,6 +131,7 @@ const ProgressCircle = styled.svg<{ timer: TimerName }>`
   position: absolute;
   left: 0;
   top: 0;
+  z-index: -1;
 
   & circle {
     stroke:  ${(props) => 'var(--light-' + props.timer});

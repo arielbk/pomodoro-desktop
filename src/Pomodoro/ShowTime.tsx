@@ -1,18 +1,34 @@
-import React from 'react';
+import { invoke } from '@tauri-apps/api';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TimersContext, { TimersContextType, TimerName } from './TimersContext';
+
+const getMins = (time: number) =>
+  String(Math.floor(time / 1000 / 60)).padStart(2, '0');
+const getSecs = (time: number) =>
+  String(Math.floor((time / 1000) % 60)).padStart(2, '0');
+const getMsecs = (time: number) => String(Math.floor((time % 1000) / 100));
 
 // displays the timer's current time formatted
 const ShowTime: React.FC<{ context: TimersContextType }> = ({ context }) => {
   const { state } = context;
-
   const { timeRemaining } = state.activeTimer;
 
-  const mins = String(Math.floor(timeRemaining / 1000 / 60)).padStart(2, '0');
-  const secs = String(Math.floor((timeRemaining / 1000) % 60)).padStart(2, '0');
-  const msecs = String(Math.floor((timeRemaining % 1000) / 100));
+  const [mins, setMins] = useState(getMins(timeRemaining));
+  const [secs, setSecs] = useState(getSecs(timeRemaining));
+  const [msecs, setMsecs] = useState(getMsecs(timeRemaining));
 
-  document.title = `${mins}:${secs} - pomodoro timer`;
+  useEffect(() => {
+    setMins(getMins(timeRemaining));
+    setSecs(getSecs(timeRemaining));
+    setMsecs(getMsecs(timeRemaining));
+  }, [timeRemaining]);
+
+  useEffect(() => {
+    // send time string to tauri rust side
+    invoke('set_time', { time: `${mins}:${secs}` });
+  }, [secs]);
+
   return (
     <Container>
       <Minutes timer={state.activeTimer.name}>{mins}</Minutes>

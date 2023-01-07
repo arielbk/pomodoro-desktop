@@ -57,10 +57,14 @@
         "fullscreen": false,
         "height": 460,
         "resizable": false,
-        "title": "Pomodori",
+        "title": "Pomodori 🍅",
         "width": 840,
         "theme": "Dark"
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }
