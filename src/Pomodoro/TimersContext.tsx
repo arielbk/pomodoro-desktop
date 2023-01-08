@@ -5,6 +5,15 @@ import LevelUp from './sounds/levelup.mp3';
 import Winning from './sounds/winning.mp3';
 import { register } from '@tauri-apps/api/globalShortcut';
 
+const audioCtx = new AudioContext();
+
+async function loadSound(url: string) {
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  const audioBuffer = await audioCtx.decodeAudioData(buffer);
+  return audioBuffer;
+}
+
 export type TimerName = 'focus' | 'break' | 'longBreak';
 export type SoundType = 'Bell' | 'Triumph' | 'LevelUp' | 'Winning';
 export type TimerType = {
@@ -105,11 +114,17 @@ export class TimersProvider extends Component<
   componentDidMount = () => {
     document.addEventListener('mousedown', this.setMouseDown);
     document.addEventListener('mouseup', this.setMouseUp);
-    register('Control+Shift+Space', () => {
-      // TODO: web audio api -- load into memory and play
-      this.LevelUp?.play();
+    register('CommandOrControl+Alt+Enter', () => {
+      this.playSound('LevelUp');
       this.handlePlayPause();
     });
+    const loadAllSounds = async () => {
+      this.Bell = await loadSound(Bell);
+      this.Triumph = await loadSound(Triumph);
+      this.LevelUp = await loadSound(LevelUp);
+      this.Winning = await loadSound(Winning);
+    };
+    loadAllSounds();
   };
 
   componentWillUnmount = () => {
@@ -121,14 +136,24 @@ export class TimersProvider extends Component<
   //                                        play sound
   // --------------------------------------------------------------------------
 
-  playSound = (sound: SoundType) => {
-    this[sound]?.play();
+  playSound = async (sound: SoundType) => {
+    // this[sound]?.play();
+    // ensure we are in a resumed state
+    await audioCtx.resume();
+    // create a buffer source for audio
+    const source = audioCtx.createBufferSource();
+    // connect to destination
+    source.connect(audioCtx.destination);
+    // assign loaded buffer
+    source.buffer = this[sound];
+    // play immediately from the top
+    source.start(0);
   };
 
-  Bell: HTMLAudioElement | null = null;
-  Triumph: HTMLAudioElement | null = null;
-  LevelUp: HTMLAudioElement | null = null;
-  Winning: HTMLAudioElement | null = null;
+  Bell: AudioBuffer | null = null;
+  Triumph: AudioBuffer | null = null;
+  LevelUp: AudioBuffer | null = null;
+  Winning: AudioBuffer | null = null;
 
   // --------------------------------------------------------------------------
   //                                           timer function
@@ -327,11 +352,10 @@ export class TimersProvider extends Component<
         }}
       >
         {children}
-
-        <audio src={Bell} ref={(comp) => (this.Bell = comp)} />
+        {/* <audio src={Bell} ref={(comp) => (this.Bell = comp)} />
         <audio src={Triumph} ref={(comp) => (this.Triumph = comp)} />
         <audio src={LevelUp} ref={(comp) => (this.LevelUp = comp)} />
-        <audio src={Winning} ref={(comp) => (this.Winning = comp)} />
+        <audio src={Winning} ref={(comp) => (this.Winning = comp)} /> */}
       </TimersContext.Provider>
     );
   }
