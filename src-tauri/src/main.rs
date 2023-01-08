@@ -9,8 +9,8 @@ use tauri::{SystemTray, SystemTrayMenu, CustomMenuItem, AppHandle, SystemTrayEve
 #[tauri::command]
 fn set_time(time: &str, app_handle: tauri::AppHandle) {
     let time_menu_item = app_handle.tray_handle().get_item("time");
-    time_menu_item.set_title(time);
-    time_menu_item.set_enabled(false); 
+    let _ = time_menu_item.set_title(time);
+    let _ = time_menu_item.set_enabled(false); 
 }
 
 fn make_tray() -> SystemTray {
@@ -33,11 +33,11 @@ fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                   menu_item.set_title("Show").unwrap();
                 },
                 Ok(false) => {
-                  window.show().unwrap();
+                  let _res = window.set_focus();
                   menu_item.set_title("Hide").unwrap();
 
                 },
-                Err(_e) => unimplemented!("some kind of error!?"),
+                _ => {}
             }
         } 
         if id.as_str() == "quit" {

@@ -12,8 +12,8 @@ export default function Counters() {
           <Group>
             <Goal>of {context.state.goal}</Goal>
             <Text>
-              pomodoros
-              <br /> completed
+              pomodori
+              <br /> down
             </Text>
           </Group>
         </span>

@@ -62,10 +62,6 @@ const SettingsItem = styled.div`
   &:hover {
     color: var(--lightgrey);
   }
-
-  @media (max-width: 700px) {
-    width: 100%;
-  }
 `;
 
 const IncrementDecrement = styled.a<{ timer: TimerName }>`

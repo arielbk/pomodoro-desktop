@@ -55,11 +55,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 460,
+        "height": 220,
         "resizable": false,
         "title": "Pomodori 🍅",
-        "width": 840,
-        "theme": "Dark"
+        "width": 420,
+        "theme": "Dark",
+        "alwaysOnTop": true
       }
     ],
     "systemTray": {

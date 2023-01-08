@@ -74,14 +74,6 @@ const ModalContent = styled(motion.div)`
   min-width: 320px;
   padding: 2rem;
   border-radius: 5px;
-
-  @media and (max-height: 870px) {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    margin: 1rem 0;
-    padding: 1rem;
-  }
 `;
 
 const Background = styled.div`

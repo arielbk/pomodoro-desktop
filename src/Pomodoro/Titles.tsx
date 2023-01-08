@@ -56,10 +56,6 @@ const Title = styled.div<{ active: boolean }>`
   padding: 0.4em;
   position: relative;
   color: var(${(props) => (props.active ? '--light' : '--med')}grey);
-
-  @media (max-width: 700px) {
-    width: 100%;
-  }
 `;
 
 const Underline = styled.div<{ active: boolean; timer: TimerName }>`
@@ -69,7 +65,4 @@ const Underline = styled.div<{ active: boolean; timer: TimerName }>`
   background: var(--${(props) =>
     props.active ? `light-${props.timer});` : 'faintgrey);'}
 
-    @media (max-width: 700px) {
-    width: 100%;
-  }
 `;

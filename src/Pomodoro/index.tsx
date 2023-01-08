@@ -19,8 +19,6 @@ const View = () => {
   return (
     <TimersProvider>
       <Container>
-        {/* <MainHeader>Pomodori</MainHeader> */}
-        {/* <Divider /> */}
         <MainContent>
           {/* actual (non-styled) components */}
           <ButtonProgress />
@@ -30,19 +28,19 @@ const View = () => {
 
         <Titles />
 
-        <AboutToggle onClick={toggleAboutOpen}>
+        {/* <AboutToggle onClick={toggleAboutOpen}>
           <FaQuestion />
         </AboutToggle>
         <Modal toggle={toggleAboutOpen} on={aboutOpen} from="left">
           <About />
-        </Modal>
+        </Modal> */}
 
-        <SettingsToggle onClick={toggleSettingsOpen}>
+        {/* <SettingsToggle onClick={toggleSettingsOpen}>
           <FaCog />
         </SettingsToggle>
         <Modal toggle={toggleSettingsOpen} on={settingsOpen} from="right">
           <Settings />
-        </Modal>
+        </Modal> */}
       </Container>
     </TimersProvider>
   );
@@ -51,44 +49,22 @@ const View = () => {
 export default View;
 
 const Container = styled.div`
+  scale: 0.5;
+  transform-origin: 0 0;
   position: relative;
-  max-width: 940px;
+  width: 200vw;
   background: var(--darkgrey);
   box-shadow: 0 12px 50px rgba(0, 0, 0, 0.6);
   border-radius: 5px;
   margin: auto;
   padding: 40px 60px 80px 60px;
-
-  @media (max-width: 780px) {
-    margin: 0;
-    padding: 20px 25px 40px 25px;
-  }
-`;
-
-const MainHeader = styled.h1`
-  font-size: 3.6em;
-  text-align: center;
-  margin: 0;
-`;
-
-const Divider = styled.div`
-  height: 5px;
-  width: 100%;
-  background: var(--medgrey);
-  border-radius: 5px;
-  margin: 20px 0;
 `;
 
 const MainContent = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 60px 0;
-
-  @media (max-width: 700px) {
-    flex-wrap: wrap;
-    margin: 50px 0 40px 0;
-  }
+  margin: 30px 0;
 `;
 
 const StyledToggle = styled.div`
