@@ -13,6 +13,8 @@ import { TimersProvider } from './TimersContext';
 import Titles from './Titles';
 import useToggle from './useToggle';
 
+//TODO: abstract into native windows
+
 const View = () => {
   const [aboutOpen, toggleAboutOpen] = useToggle();
   const [settingsOpen, toggleSettingsOpen] = useToggle();
