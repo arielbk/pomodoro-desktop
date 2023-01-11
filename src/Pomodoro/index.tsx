@@ -66,7 +66,8 @@ const MainContent = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 30px 0;
+  margin: 20px 0 40px;
+  gap: 2rem;
 `;
 
 const StyledToggle = styled.div`

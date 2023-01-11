@@ -39,26 +39,23 @@ class ButtonProgress extends Component<{ context: TimersContextType }> {
 
     return (
       <ButtonsContainer>
-        <ResetButton onClick={context.handleReset}>
-          <IoMdRefresh />
-        </ResetButton>
-
-        <StyledButtonProgress timer={context.state.activeTimer.name}>
-          <ProgressCircle
-            height="140"
-            width="140"
-            timer={context.state.activeTimer.name}
-          >
-            <circle strokeDashoffset={strokeDashoffset} />
+        <StyledButtonProgress
+          timer={context.state.activeTimer.name}
+          onClick={context.handlePlayPause}
+        >
+          <ProgressCircle timer={context.state.activeTimer.name}>
+            <circle r="63" strokeDashoffset={strokeDashoffset} />
           </ProgressCircle>
           <ButtonProgressInner
             paused={context.state.activeTimer.paused}
             timer={context.state.activeTimer.name}
-            onClick={context.handlePlayPause}
           >
             {context.state.activeTimer.paused ? <IoMdPlay /> : <IoMdPause />}
           </ButtonProgressInner>
         </StyledButtonProgress>
+        <ResetButton onClick={context.handleReset}>
+          <IoMdRefresh />
+        </ResetButton>
       </ButtonsContainer>
     );
   }
@@ -72,7 +69,9 @@ const WithContext = () => (
 
 export default WithContext;
 
-const ButtonsContainer = styled.div`
+const ButtonsContainer = styled.button`
+  background: transparent;
+  border: none;
   position: relative;
   width: 150px;
   height: 150px;
@@ -84,6 +83,7 @@ const ResetButton = styled.div`
   right: -15px;
   font-size: 40px;
   font-weight: 900;
+  color: var(--medgrey);
 
   &:hover {
     color: var(--light-focus);
@@ -91,11 +91,12 @@ const ResetButton = styled.div`
   }
 `;
 
-const StyledButtonProgress = styled.div<{ timer: TimerName }>`
+const StyledButtonProgress = styled.button<{ timer: TimerName }>`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  border: none;
 
   width: 140px;
   height: 140px;
@@ -133,13 +134,13 @@ const ProgressCircle = styled.svg<{ timer: TimerName }>`
   position: absolute;
   left: 0;
   top: 0;
-  z-index: -1;
+  width: 140px;
+  height: 140px;
+  fill: transparent;
 
   & circle {
     stroke:  ${(props) => 'var(--light-' + props.timer});
     stroke-width: 14;
-    fill: red;
-    r: 63;
     cx: 70;
     cy: 70;
   }
@@ -147,6 +148,7 @@ const ProgressCircle = styled.svg<{ timer: TimerName }>`
   // circumference = 63 * 2 * PI = 395.8
 
   transition: 1s;
-  // stroke-dasharray: 395.8 395.8;
+  stroke-dasharray: 395.8 395.8;
+  stroke-linecap: round;
   transform: rotate(-90deg);
 `;
