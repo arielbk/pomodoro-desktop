@@ -13,7 +13,7 @@ export default function Counters() {
             <Goal>of {context.state.goal}</Goal>
             <Text>
               pomodori
-              <br /> down
+              <br /> today
             </Text>
           </Group>
         </span>
