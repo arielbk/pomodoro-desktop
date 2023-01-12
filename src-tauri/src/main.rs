@@ -7,10 +7,12 @@ use tauri::{SystemTray, SystemTrayMenu, CustomMenuItem, AppHandle, SystemTrayEve
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn set_time(time: &str, app_handle: tauri::AppHandle) {
+fn set_time(time: &str, timer: &str, app_handle: tauri::AppHandle) {
     let time_menu_item = app_handle.tray_handle().get_item("time");
-    let _ = time_menu_item.set_title(time);
-    let _ = time_menu_item.set_enabled(false); 
+    let menu_item_title = format!("{} - {}", timer, time);
+    let _ = time_menu_item.set_title(menu_item_title);
+    let _ = time_menu_item.set_enabled(false);
+    let _ = app_handle.tray_handle().set_title(time);
 }
 
 fn make_tray() -> SystemTray {

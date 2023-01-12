@@ -26,7 +26,10 @@ const ShowTime: React.FC<{ context: TimersContextType }> = ({ context }) => {
 
   useEffect(() => {
     // send time string to tauri rust side
-    invoke('set_time', { time: `${mins}:${secs}` });
+    invoke('set_time', {
+      time: `${mins}:${secs}`,
+      timer: state.activeTimer.name,
+    });
   }, [secs]);
 
   return (
