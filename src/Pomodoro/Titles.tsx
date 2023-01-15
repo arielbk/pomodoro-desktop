@@ -6,7 +6,7 @@ const FocusTitleContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 4px;
+  gap: 2px;
 `;
 
 const FocusUnderline = () => {

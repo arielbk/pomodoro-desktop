@@ -4,8 +4,14 @@ import Triumph from './sounds/triumph.mp3';
 import LevelUp from './sounds/levelup.mp3';
 import Winning from './sounds/winning.mp3';
 import { register } from '@tauri-apps/api/globalShortcut';
+import { Store } from 'tauri-plugin-store-api';
+
+// local pomodoros store
+const store = new Store('.pomodori.dat');
 
 const audioCtx = new AudioContext();
+
+const isDev = process.env.NODE_ENV === 'development';
 
 async function loadSound(url: string) {
   const response = await fetch(url);
@@ -48,21 +54,21 @@ export const initialState = {
   // focus TIMER
   focus: {
     name: 'focus',
-    duration: 1500000, // mseconds - 25 min default
+    duration: isDev ? 1500 : 1500000, // mseconds - 25 min default
     sound: 'Triumph' as SoundType,
   } as TimerType,
 
   // BREAK TIMER
   break: {
     name: 'break',
-    duration: 300000, // mseconds - 5 min default
+    duration: isDev ? 300 : 300000, // mseconds - 5 min default
     sound: 'Bell' as SoundType,
   } as TimerType,
 
   // LONG BREAK TIMER
   longBreak: {
     name: 'longBreak',
-    duration: 900000, // mseconds - 15 min default
+    duration: isDev ? 900 : 900000, // mseconds - 15 min default
     sound: 'Winning' as SoundType,
   } as TimerType,
 };
@@ -111,7 +117,16 @@ export class TimersProvider extends Component<
     this.setState({ mouseDown: false });
   };
 
-  componentDidMount = () => {
+  setStoredPomodoros = async () => {
+    const todayKey = new Date().toDateString();
+    const stored = await store.get(todayKey);
+    if (!stored) return;
+    this.setState({ pomodoros: (stored as number) ?? 0 });
+  };
+
+  componentDidMount = async () => {
+    this.setStoredPomodoros();
+
     document.addEventListener('mousedown', this.setMouseDown);
     document.addEventListener('mouseup', this.setMouseUp);
     register('CommandOrControl+Alt+Enter', () => {
@@ -181,7 +196,7 @@ export class TimersProvider extends Component<
   //                                           timer ends
   // --------------------------------------------------------------------------
 
-  onTimerEnd = () => {
+  onTimerEnd = async () => {
     const activeTimer = { ...this.state.activeTimer };
     clearInterval(activeTimer.intervalID);
 
@@ -191,6 +206,10 @@ export class TimersProvider extends Component<
     if (activeTimer.name === 'focus') {
       const pomodoros = this.state.pomodoros + 1;
       this.setState({ pomodoros });
+
+      const todayKey = new Date().toDateString();
+      await store.set(todayKey, pomodoros);
+
       if (pomodoros % this.state.pomodoroSet === 0) {
         nextTimer = { ...this.state.longBreak };
       } else {

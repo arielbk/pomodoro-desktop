@@ -31,7 +31,7 @@ fn make_tray() -> SystemTray {
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(CustomMenuItem::new("toggle".to_string(), "Hide"))
         .add_item(CustomMenuItem::new("quit".to_string(), "Quit"));
-    return SystemTray::new().with_menu(menu);
+    SystemTray::new().with_menu(menu)
 }
 
 fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
@@ -59,6 +59,7 @@ fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
         .system_tray(make_tray())
         .on_system_tray_event(handle_tray_event)
         .invoke_handler(tauri::generate_handler![set_time])

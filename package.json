@@ -20,7 +20,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-spring": "^9.6.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.2",
