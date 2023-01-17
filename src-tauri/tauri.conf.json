@@ -55,17 +55,22 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 220,
+        "height": 190,
         "resizable": false,
         "title": "Pomodori 🍅",
         "width": 420,
         "theme": "Dark",
-        "alwaysOnTop": true
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "decorations": false,
+        "focus": false,
+        "visible": false
       }
     ],
     "systemTray": {
       "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false
     }
   }
 }

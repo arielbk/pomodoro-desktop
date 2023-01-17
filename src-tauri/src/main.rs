@@ -3,10 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-use tauri::{
-    AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
-    SystemTrayMenuItem,
-};
+use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayMenu, SystemTrayMenuItem};
+use tauri_plugin_positioner::{Position, WindowExt};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -34,34 +32,51 @@ fn make_tray() -> SystemTray {
     SystemTray::new().with_menu(menu)
 }
 
-fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
-    if let SystemTrayEvent::MenuItemClick { id, .. } = event {
-        if id.as_str() == "toggle" {
-            let window = app.get_window("main").unwrap();
-            let menu_item = app.tray_handle().get_item("toggle");
-            match window.is_visible() {
-                Ok(true) => {
-                    window.hide().unwrap();
-                    menu_item.set_title("Show").unwrap();
-                }
-                Ok(false) => {
-                    let _res = window.set_focus();
-                    menu_item.set_title("Hide").unwrap();
-                }
-                _ => {}
-            }
-        }
-        if id.as_str() == "quit" {
-            app.exit(0);
-        }
-    }
-}
+// TRAY MENU REMOVED
+// fn handle_tray_event(app: &AppHandle, event: SystemTrayEvent) {
+//     // tauri_plugin_positioner::on_tray_event(app, &event);
+//     if let SystemTrayEvent::MenuItemClick { id, .. } = event {
+//         let window = app.get_window("main").unwrap();
+//         let _ = window.move_window(Position::TrayCenter);
+//         if id.as_str() == "toggle" {
+//             let menu_item = app.tray_handle().get_item("toggle");
+//             match window.is_visible() {
+//                 Ok(true) => {
+//                     window.hide().unwrap();
+//                     menu_item.set_title("Show").unwrap();
+//                 }
+//                 Ok(false) => {
+//                     let _res = window.set_focus();
+//                     menu_item.set_title("Hide").unwrap();
+//                 }
+//                 _ => {}
+//             }
+//         }
+//         if id.as_str() == "quit" {
+//             app.exit(0);
+//         }
+//     }
+// }
 
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_positioner::init())
         .system_tray(make_tray())
-        .on_system_tray_event(handle_tray_event)
+        .on_system_tray_event(|app, event| {
+            tauri_plugin_positioner::on_tray_event(app, &event);
+            let win = app.get_window("main").unwrap();
+            match win.is_visible() {
+                Ok(true) => {
+                    win.hide().unwrap();
+                }
+                Ok(false) => {
+                    let _res = win.set_focus();
+                }
+                _ => {}
+            }
+            let _ = win.move_window(Position::TrayBottomCenter);
+        })
         .invoke_handler(tauri::generate_handler![set_time])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
