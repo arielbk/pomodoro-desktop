@@ -77,6 +77,26 @@ fn main() {
             }
             let _ = win.move_window(Position::TrayBottomCenter);
         })
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::Focused(false) => {
+                // hide the window is unfocused
+                event.window().hide().unwrap();
+            }
+            _ => {}
+        })
+        .setup(|app| {
+            // only show tray bar icon (not app menu bar)
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
+            let window = app.get_window("main").unwrap();
+
+            // this is a workaround for the window to always show in current workspace.
+            // see https://github.com/tauri-apps/tauri/issues/2801
+            window.set_always_on_top(true).unwrap();
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![set_time])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
