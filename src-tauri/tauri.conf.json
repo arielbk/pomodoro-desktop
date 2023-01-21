@@ -11,7 +11,14 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": [
+          "https://pomoshare.netlify.app/api/trpc/pomodoro.update?batch=1"
+        ]
+      }
     },
     "bundle": {
       "active": true,
@@ -63,8 +70,8 @@
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
         "decorations": false,
-        "focus": true,
-        "visible": true
+        "focus": false,
+        "visible": false
       }
     ],
     "systemTray": {

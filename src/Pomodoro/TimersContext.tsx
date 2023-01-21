@@ -4,6 +4,7 @@ import Triumph from './sounds/triumph.mp3';
 import LevelUp from './sounds/levelup.mp3';
 import Winning from './sounds/winning.mp3';
 import { register } from '@tauri-apps/api/globalShortcut';
+import { Body, fetch, HttpVerb } from '@tauri-apps/api/http';
 import { Store } from 'tauri-plugin-store-api';
 
 // local pomodoros store
@@ -11,7 +12,7 @@ const store = new Store('.pomodori.dat');
 
 const audioCtx = new AudioContext();
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = import.meta.env.DEV;
 
 async function loadSound(url: string) {
   const response = await fetch(url);
@@ -54,21 +55,21 @@ export const initialState = {
   // focus TIMER
   focus: {
     name: 'focus',
-    duration: isDev ? 1500 : 1500000, // mseconds - 25 min default
+    duration: isDev ? 15000 : 1500000, // mseconds - 25 min default
     sound: 'Triumph' as SoundType,
   } as TimerType,
 
   // BREAK TIMER
   break: {
     name: 'break',
-    duration: isDev ? 300 : 300000, // mseconds - 5 min default
+    duration: isDev ? 3000 : 300000, // mseconds - 5 min default
     sound: 'Bell' as SoundType,
   } as TimerType,
 
   // LONG BREAK TIMER
   longBreak: {
     name: 'longBreak',
-    duration: isDev ? 900 : 900000, // mseconds - 15 min default
+    duration: isDev ? 9000 : 900000, // mseconds - 15 min default
     sound: 'Winning' as SoundType,
   } as TimerType,
 };
@@ -231,7 +232,7 @@ export class TimersProvider extends Component<
   //                                           play/pause timer
   // --------------------------------------------------------------------------
 
-  handlePlayPause = () => {
+  handlePlayPause = async () => {
     const activeTimer = { ...this.state.activeTimer };
 
     // pause or play the timer depending on current state
@@ -245,6 +246,33 @@ export class TimersProvider extends Component<
     activeTimer.paused = !activeTimer.paused;
 
     this.setState({ activeTimer });
+
+    const reqUrl =
+      import.meta.env.VITE_POMOSHARE_URL + 'pomodoro.update?batch=1';
+    const reqBody = {
+      '0': {
+        json: {
+          isPomodoro: activeTimer.name === 'focus' && !activeTimer.paused,
+          pomodoroEnd: activeTimer.untilTime,
+        },
+      },
+    };
+    console.log(reqUrl, reqBody);
+
+    try {
+      // update pomoshare info
+      const response = await fetch(reqUrl, {
+        method: 'POST' as HttpVerb,
+        // body: {
+        //   type: 'Text',
+        //   payload: JSON.stringify(reqBody),
+        // },
+        body: Body.json(reqBody),
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // --------------------------------------------------------------------------
