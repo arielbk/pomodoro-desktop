@@ -248,7 +248,7 @@ export class TimersProvider extends Component<
     this.setState({ activeTimer });
 
     const reqUrl =
-      import.meta.env.VITE_POMOSHARE_URL + 'pomodoro.update?batch=1';
+      'https://pomoshare.netlify.app/api/trpc/pomodoro.update?batch=1';
     const reqBody = {
       '0': {
         json: {
