@@ -6,7 +6,6 @@
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_positioner::{Position, WindowExt};
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn set_time(time: &str, timer: &str, app_handle: tauri::AppHandle) {
     let time_menu_item = app_handle.tray_handle().get_item("time");
@@ -17,6 +16,9 @@ fn set_time(time: &str, timer: &str, app_handle: tauri::AppHandle) {
     time_menu_item
         .set_title(menu_item_title)
         .expect("Menu title could not be set");
+
+    // System tray title is only available on MacOS
+    #[cfg(target_os = "macos")]
     app_handle
         .tray_handle()
         .set_title(time)
@@ -88,12 +90,6 @@ fn main() {
             // only show tray bar icon (not app menu bar)
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-
-            let window = app.get_window("main").unwrap();
-
-            // this is a workaround for the window to always show in current workspace.
-            // see https://github.com/tauri-apps/tauri/issues/2801
-            window.set_always_on_top(true).unwrap();
 
             Ok(())
         })
