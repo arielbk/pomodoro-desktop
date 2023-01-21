@@ -4,7 +4,7 @@ import Triumph from './sounds/triumph.mp3';
 import LevelUp from './sounds/levelup.mp3';
 import Winning from './sounds/winning.mp3';
 import { register } from '@tauri-apps/api/globalShortcut';
-import { Body, fetch, HttpVerb } from '@tauri-apps/api/http';
+import { Body, fetch as tauriFetch, HttpVerb } from '@tauri-apps/api/http';
 import { Store } from 'tauri-plugin-store-api';
 
 // local pomodoros store
@@ -261,7 +261,7 @@ export class TimersProvider extends Component<
 
     try {
       // update pomoshare info
-      const response = await fetch(reqUrl, {
+      const response = await tauriFetch(reqUrl, {
         method: 'POST' as HttpVerb,
         // body: {
         //   type: 'Text',
