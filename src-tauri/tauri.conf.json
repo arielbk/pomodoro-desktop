@@ -16,7 +16,7 @@
         "all": true,
         "request": true,
         "scope": [
-          "https://pomoshare.netlify.app/api/trpc/pomodoro.update?batch=1"
+          "https://pomoshare.arielbk.com/api/trpc/pomodoro.update?batch=1"
         ]
       }
     },

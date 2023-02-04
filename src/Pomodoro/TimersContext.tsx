@@ -248,7 +248,7 @@ export class TimersProvider extends Component<
     this.setState({ activeTimer });
 
     const reqUrl =
-      'https://pomoshare.netlify.app/api/trpc/pomodoro.update?batch=1';
+      'https://pomoshare.arielbk.com/api/trpc/pomodoro.update?batch=1';
     const reqBody = {
       '0': {
         json: {
@@ -263,10 +263,6 @@ export class TimersProvider extends Component<
       // update pomoshare info
       const response = await tauriFetch(reqUrl, {
         method: 'POST' as HttpVerb,
-        // body: {
-        //   type: 'Text',
-        //   payload: JSON.stringify(reqBody),
-        // },
         body: Body.json(reqBody),
       });
       console.log(response);
