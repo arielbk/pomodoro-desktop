@@ -1,20 +1,7 @@
 import { register } from "@tauri-apps/api/globalShortcut";
 import React, { Component } from "react";
-import Bell from "./sounds/bell.mp3";
-import LevelUp from "./sounds/levelup.mp3";
-import Triumph from "./sounds/triumph.mp3";
-import Winning from "./sounds/winning.mp3";
-
-const audioCtx = new AudioContext();
 
 const isDev = process.env.NODE_ENV === "development";
-
-async function loadSound(url: string) {
-  const response = await fetch(url);
-  const buffer = await response.arrayBuffer();
-  const audioBuffer = await audioCtx.decodeAudioData(buffer);
-  return audioBuffer;
-}
 
 export type TimerName = "focus" | "break" | "longBreak";
 export type SoundType = "Bell" | "Triumph" | "LevelUp" | "Winning";
@@ -38,9 +25,6 @@ export const initialState = {
 
   // helps with the settings incrementors/decrementors that rapidly fire while the mouse is down
   mouseDown: false,
-
-  // sound names to assign to a timer
-  sounds: ["Bell", "Triumph", "LevelUp", "Winning"] as SoundType[],
 
   // focus TIMER
   focus: {
@@ -66,15 +50,8 @@ export const initialState = {
 
 export interface TimersContextType {
   state: typeof initialState;
-  sounds: {
-    Bell: string;
-    Triumph: string;
-    LevelUp: string;
-    Winning: string;
-  };
   setMouseUp: () => void;
   setMouseDown: () => void;
-  playSound: (sound: any) => void;
   timerFunc: () => void;
   onTimerEnd: () => void;
   handlePlayPause: () => void;
@@ -110,45 +87,16 @@ export class TimersProvider extends Component<
     document.addEventListener("mousedown", this.setMouseDown);
     document.addEventListener("mouseup", this.setMouseUp);
     register("CommandOrControl+Alt+Enter", () => {
-      this.playSound("LevelUp");
+      // TODO: play sound from context
+      // this.playSound("LevelUp");
       this.handlePlayPause();
     });
-    const loadAllSounds = async () => {
-      this.Bell = await loadSound(Bell);
-      this.Triumph = await loadSound(Triumph);
-      this.LevelUp = await loadSound(LevelUp);
-      this.Winning = await loadSound(Winning);
-    };
-    loadAllSounds();
   };
 
   componentWillUnmount = () => {
     document.removeEventListener("mousedown", this.setMouseDown);
     document.removeEventListener("mouseup", this.setMouseUp);
   };
-
-  // --------------------------------------------------------------------------
-  //                                        play sound
-  // --------------------------------------------------------------------------
-
-  playSound = async (sound: SoundType) => {
-    // this[sound]?.play();
-    // ensure we are in a resumed state
-    await audioCtx.resume();
-    // create a buffer source for audio
-    const source = audioCtx.createBufferSource();
-    // connect to destination
-    source.connect(audioCtx.destination);
-    // assign loaded buffer
-    source.buffer = this[sound];
-    // play immediately from the top
-    source.start(0);
-  };
-
-  Bell: AudioBuffer | null = null;
-  Triumph: AudioBuffer | null = null;
-  LevelUp: AudioBuffer | null = null;
-  Winning: AudioBuffer | null = null;
 
   // --------------------------------------------------------------------------
   //                                           timer function
@@ -180,7 +128,8 @@ export class TimersProvider extends Component<
     const activeTimer = { ...this.state.activeTimer };
     clearInterval(activeTimer.intervalID);
 
-    this.playSound(this.state[activeTimer.name].sound);
+    // TODO: connnect to sound context
+    // this.playSound(this.state[activeTimer.name].sound);
 
     let nextTimer: TimerType;
     if (activeTimer.name === "focus") {
@@ -295,18 +244,9 @@ export class TimersProvider extends Component<
           // state
           state: this.state,
 
-          // sounds
-          sounds: {
-            Bell,
-            Triumph,
-            LevelUp,
-            Winning,
-          },
-
           // functions
           setMouseUp: this.setMouseUp,
           setMouseDown: this.setMouseDown,
-          playSound: this.playSound,
           timerFunc: this.timerFunc,
           onTimerEnd: this.onTimerEnd,
           handlePlayPause: this.handlePlayPause,
