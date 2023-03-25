@@ -17,7 +17,7 @@ interface SoundsValues {
   playSound: (sound: SoundType) => void;
 }
 
-const SoundsContext = createContext({});
+const SoundsContext = createContext({} as SoundsValues);
 
 export const SoundsProvider: React.FC<{
   children: React.ReactElement;
