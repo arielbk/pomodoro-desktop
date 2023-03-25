@@ -31,7 +31,7 @@ type TimersValues = {
 
 const TimersContext = createContext({} as TimersValues);
 
-export const TimerProvider: React.FC<{
+export const TimersProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
   const [activeTimer, setActiveTimer] = useState({

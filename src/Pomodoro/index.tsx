@@ -6,12 +6,12 @@ import About from "./About";
 import ButtonProgress from "./ButtonProgress";
 import { SoundsProvider } from "./contexts/SoundsContext";
 import { StatsProvider } from "./contexts/StatsContext";
+import { TimersProvider } from "./contexts/TimersContext";
 import Counters from "./Counters";
 import "./global.css";
 import Modal from "./Modal";
 import Settings from "./Settings";
 import ShowTime from "./ShowTime";
-import { TimersProvider } from "./TimersContext";
 import Titles from "./Titles";
 import useToggle from "./useToggle";
 
