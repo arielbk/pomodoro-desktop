@@ -10,7 +10,7 @@ interface StatsValues {
   incrementPomodoros: () => void;
 }
 
-const StatsContext = createContext({} as StatsValues);
+export const StatsContext = createContext({} as StatsValues);
 
 // local pomodoros store
 const store = new Store(".pomodori.dat");
