@@ -1,6 +1,6 @@
-import React from 'react';
-import TimersContext, { TimerName } from '../TimersContext';
-import { SettingsItem, IncrementDecrement } from './Styles';
+import React from "react";
+import TimersContext, { TimerName } from "../TimersContext";
+import { SettingsItem, IncrementDecrement } from "./Styles";
 
 interface Props {
   timerName: TimerName;

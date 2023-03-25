@@ -1,17 +1,13 @@
-import React, { Component } from 'react';
-import Bell from './sounds/bell.mp3';
-import Triumph from './sounds/triumph.mp3';
-import LevelUp from './sounds/levelup.mp3';
-import Winning from './sounds/winning.mp3';
-import { register } from '@tauri-apps/api/globalShortcut';
-import { Store } from 'tauri-plugin-store-api';
-
-// local pomodoros store
-const store = new Store('.pomodori.dat');
+import { register } from "@tauri-apps/api/globalShortcut";
+import React, { Component } from "react";
+import Bell from "./sounds/bell.mp3";
+import LevelUp from "./sounds/levelup.mp3";
+import Triumph from "./sounds/triumph.mp3";
+import Winning from "./sounds/winning.mp3";
 
 const audioCtx = new AudioContext();
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 async function loadSound(url: string) {
   const response = await fetch(url);
@@ -20,8 +16,8 @@ async function loadSound(url: string) {
   return audioBuffer;
 }
 
-export type TimerName = 'focus' | 'break' | 'longBreak';
-export type SoundType = 'Bell' | 'Triumph' | 'LevelUp' | 'Winning';
+export type TimerName = "focus" | "break" | "longBreak";
+export type SoundType = "Bell" | "Triumph" | "LevelUp" | "Winning";
 export type TimerType = {
   name: TimerName;
   duration: number;
@@ -30,7 +26,7 @@ export type TimerType = {
 
 export const initialState = {
   activeTimer: {
-    name: 'focus' as TimerName,
+    name: "focus" as TimerName,
     timeRemaining: 1500000,
     duration: 1500000, // so that settings changes does not alter things - freeze timer duration
     paused: true,
@@ -43,33 +39,28 @@ export const initialState = {
   // helps with the settings incrementors/decrementors that rapidly fire while the mouse is down
   mouseDown: false,
 
-  // pomodoros completed, pomodoro goal, pomodoros between each long break
-  pomodoros: 0,
-  goal: 8,
-  pomodoroSet: 4,
-
   // sound names to assign to a timer
-  sounds: ['Bell', 'Triumph', 'LevelUp', 'Winning'] as SoundType[],
+  sounds: ["Bell", "Triumph", "LevelUp", "Winning"] as SoundType[],
 
   // focus TIMER
   focus: {
-    name: 'focus',
+    name: "focus",
     duration: isDev ? 1500 : 1500000, // mseconds - 25 min default
-    sound: 'Triumph' as SoundType,
+    sound: "Triumph" as SoundType,
   } as TimerType,
 
   // BREAK TIMER
   break: {
-    name: 'break',
+    name: "break",
     duration: isDev ? 300 : 300000, // mseconds - 5 min default
-    sound: 'Bell' as SoundType,
+    sound: "Bell" as SoundType,
   } as TimerType,
 
   // LONG BREAK TIMER
   longBreak: {
-    name: 'longBreak',
+    name: "longBreak",
     duration: isDev ? 900 : 900000, // mseconds - 15 min default
-    sound: 'Winning' as SoundType,
+    sound: "Winning" as SoundType,
   } as TimerType,
 };
 
@@ -88,8 +79,6 @@ export interface TimersContextType {
   onTimerEnd: () => void;
   handlePlayPause: () => void;
   handleReset: () => void;
-  handleGoalChange: (newGoal: number) => void;
-  handleSetChange: (newSet: number) => void;
   handleSoundSelect: (timer: TimerName, newSound: any) => void;
   handleDurationChange: (timer: TimerName, newDuration: number) => void;
 }
@@ -117,20 +106,11 @@ export class TimersProvider extends Component<
     this.setState({ mouseDown: false });
   };
 
-  setStoredPomodoros = async () => {
-    const todayKey = new Date().toDateString();
-    const stored = await store.get(todayKey);
-    if (!stored) return;
-    this.setState({ pomodoros: (stored as number) ?? 0 });
-  };
-
   componentDidMount = async () => {
-    this.setStoredPomodoros();
-
-    document.addEventListener('mousedown', this.setMouseDown);
-    document.addEventListener('mouseup', this.setMouseUp);
-    register('CommandOrControl+Alt+Enter', () => {
-      this.playSound('LevelUp');
+    document.addEventListener("mousedown", this.setMouseDown);
+    document.addEventListener("mouseup", this.setMouseUp);
+    register("CommandOrControl+Alt+Enter", () => {
+      this.playSound("LevelUp");
       this.handlePlayPause();
     });
     const loadAllSounds = async () => {
@@ -143,8 +123,8 @@ export class TimersProvider extends Component<
   };
 
   componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.setMouseDown);
-    document.removeEventListener('mouseup', this.setMouseUp);
+    document.removeEventListener("mousedown", this.setMouseDown);
+    document.removeEventListener("mouseup", this.setMouseUp);
   };
 
   // --------------------------------------------------------------------------
@@ -203,18 +183,15 @@ export class TimersProvider extends Component<
     this.playSound(this.state[activeTimer.name].sound);
 
     let nextTimer: TimerType;
-    if (activeTimer.name === 'focus') {
-      const pomodoros = this.state.pomodoros + 1;
-      this.setState({ pomodoros });
-
-      const todayKey = new Date().toDateString();
-      await store.set(todayKey, pomodoros);
-
-      if (pomodoros % this.state.pomodoroSet === 0) {
-        nextTimer = { ...this.state.longBreak };
-      } else {
-        nextTimer = { ...this.state.break };
-      }
+    if (activeTimer.name === "focus") {
+      // TODO: connect to stats context
+      // const pomodoros = this.state.pomodoros + 1;
+      // this.setState({ pomodoros });
+      // if (pomodoros % this.state.pomodoroSet === 0) {
+      //   nextTimer = { ...this.state.longBreak };
+      // } else {
+      nextTimer = { ...this.state.break };
+      // }
     } else {
       nextTimer = { ...this.state.focus };
     }
@@ -260,42 +237,12 @@ export class TimersProvider extends Component<
 
     const { duration } = this.state.focus;
 
-    activeTimer.name = 'focus';
+    activeTimer.name = "focus";
     activeTimer.timeRemaining = duration;
     activeTimer.duration = duration;
     activeTimer.paused = true;
 
     this.setState({ activeTimer });
-  };
-
-  // --------------------------------------------------------------------------
-  //                                           goal change
-  // --------------------------------------------------------------------------
-
-  handleGoalChange = (change: number) => {
-    const goal = this.state.goal + change;
-    if (goal < 1) return;
-    this.setState({ goal });
-
-    // continue recursing the function every 0.1 seconds if mouse click is held
-    setTimeout(() => {
-      if (this.state.mouseDown) this.handleGoalChange(change);
-    }, 100);
-  };
-
-  // --------------------------------------------------------------------------
-  //                                           pomodoro set change
-  // --------------------------------------------------------------------------
-
-  handleSetChange = (change: number) => {
-    const pomodoroSet = this.state.pomodoroSet + change;
-    if (pomodoroSet < 1) return;
-    this.setState({ pomodoroSet });
-
-    // continue recursing the function every 0.1 seconds if mouse click is held
-    setTimeout(() => {
-      if (this.state.mouseDown) this.handleSetChange(change);
-    }, 100);
   };
 
   // --------------------------------------------------------------------------
@@ -364,17 +311,11 @@ export class TimersProvider extends Component<
           onTimerEnd: this.onTimerEnd,
           handlePlayPause: this.handlePlayPause,
           handleReset: this.handleReset,
-          handleGoalChange: this.handleGoalChange,
-          handleSetChange: this.handleSetChange,
           handleSoundSelect: this.handleSoundSelect,
           handleDurationChange: this.handleDurationChange,
         }}
       >
         {children}
-        {/* <audio src={Bell} ref={(comp) => (this.Bell = comp)} />
-        <audio src={Triumph} ref={(comp) => (this.Triumph = comp)} />
-        <audio src={LevelUp} ref={(comp) => (this.LevelUp = comp)} />
-        <audio src={Winning} ref={(comp) => (this.Winning = comp)} /> */}
       </TimersContext.Provider>
     );
   }

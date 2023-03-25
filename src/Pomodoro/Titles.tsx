@@ -1,6 +1,7 @@
-import React, { Fragment, useContext } from 'react';
-import styled from 'styled-components';
-import TimersContext, { TimerName } from './TimersContext';
+import { useContext } from "react";
+import styled from "styled-components";
+import { useStats } from "./contexts/StatsContext";
+import TimersContext, { TimerName } from "./TimersContext";
 
 const FocusTitleContainer = styled.div`
   width: 100%;
@@ -11,13 +12,14 @@ const FocusTitleContainer = styled.div`
 
 const FocusUnderline = () => {
   const { state } = useContext(TimersContext);
+  const { pomodoros, pomodoroSet } = useStats();
 
   return (
     <FocusTitleContainer>
-      {Array.from({ length: state.pomodoroSet }).map((_, i) => (
+      {Array.from({ length: pomodoroSet }).map((_, i) => (
         <Underline
-          timer={state.activeTimer.name === 'focus' ? 'focus' : 'default'}
-          active={i + 1 > state.pomodoros % state.pomodoroSet}
+          timer={state.activeTimer.name === "focus" ? "focus" : "default"}
+          active={i + 1 > pomodoros % pomodoroSet}
         />
       ))}
     </FocusTitleContainer>
@@ -29,16 +31,16 @@ const Titles = () => (
     {(context) => (
       <Container>
         <section>
-          <Title active={context.state.activeTimer.name === 'break'}>
+          <Title active={context.state.activeTimer.name === "break"}>
             Break
           </Title>
           <Underline
             timer="break"
-            active={context.state.activeTimer.name === 'break'}
+            active={context.state.activeTimer.name === "break"}
           />
         </section>
         <section>
-          <Title active={context.state.activeTimer.name === 'focus'}>
+          <Title active={context.state.activeTimer.name === "focus"}>
             focus
           </Title>
           <FocusUnderline />
@@ -48,12 +50,12 @@ const Titles = () => (
           /> */}
         </section>
         <section>
-          <Title active={context.state.activeTimer.name === 'longBreak'}>
+          <Title active={context.state.activeTimer.name === "longBreak"}>
             Long Break
           </Title>
           <Underline
             timer="longBreak"
-            active={context.state.activeTimer.name === 'longBreak'}
+            active={context.state.activeTimer.name === "longBreak"}
           />
         </section>
       </Container>
@@ -81,7 +83,7 @@ const Container = styled.div`
 
 const Title = styled.div<{ active: boolean }>`
   text-transform: lowercase;
-  font-family: 'Rubik';
+  font-family: "Rubik";
   font-size: 1.5rem;
   font-weight: 700;
   display: inline-block;
@@ -89,18 +91,18 @@ const Title = styled.div<{ active: boolean }>`
   text-align: center;
   padding: 0.4em;
   position: relative;
-  color: var(${(props) => (props.active ? '--light' : '--med')}grey);
+  color: var(${(props) => (props.active ? "--light" : "--med")}grey);
 `;
 
-const Underline = styled.div<{ active: boolean; timer: TimerName | 'default' }>`
+const Underline = styled.div<{ active: boolean; timer: TimerName | "default" }>`
   width: 100%;
   height: 5px;
   border-radius: 5px;
   background: var(--${(props) =>
     props.active
-      ? props.timer !== 'default'
+      ? props.timer !== "default"
         ? `light-${props.timer});`
-        : 'medgrey);'
-      : 'faintgrey);'}
+        : "medgrey);"
+      : "faintgrey);"}
 
 `;
