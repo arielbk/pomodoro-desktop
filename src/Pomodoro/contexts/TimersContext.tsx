@@ -74,22 +74,20 @@ export const TimersProvider: React.FC<{
 
   // timer function called every second while timer is on
   const timerFunc = () => {
-    // clone active timer
-    const timer = { ...activeTimer };
-
-    // mae sure timer is set up
-    if (!timer.untilTime) return;
+    // make sure timer is set up
+    if (!activeTimer.untilTime) return;
 
     // if timer ends
-    if (timer.timeRemaining < 250) {
+    if (activeTimer.timeRemaining < 250) {
       onTimerEnd();
       return;
     }
 
-    timer.timeRemaining = Math.round(timer.untilTime - Date.now());
-
     // set new state
-    setActiveTimer(timer);
+    setActiveTimer((prev) => ({
+      ...prev,
+      timeRemaining: Math.round(activeTimer.untilTime - Date.now()),
+    }));
   };
 
   const onTimerEnd = async () => {
@@ -122,17 +120,21 @@ export const TimersProvider: React.FC<{
     const timer = { ...activeTimer };
 
     timer.paused = !timer.paused;
+    if (!timer.paused) timer.untilTime = Date.now() + timer.timeRemaining;
 
     setActiveTimer(timer);
   };
 
   useEffect(() => {
-    // if timer is paused, do nothing
-    if (activeTimer.paused) return;
+    console.log({ paused: activeTimer.paused });
+    if (activeTimer.paused) {
+      clearInterval(activeTimer.intervalID);
+      return;
+    }
 
     // if timer is not paused, start it
     const timer = { ...activeTimer };
-    timer.untilTime = Date.now() + timer.timeRemaining;
+
     timer.intervalID = setInterval(timerFunc, 50);
 
     setActiveTimer(timer);
@@ -141,9 +143,6 @@ export const TimersProvider: React.FC<{
   // default back to focus timer
   const handleReset = () => {
     const timer = { ...activeTimer };
-
-    // end any running timer function
-    clearInterval(timer.intervalID);
 
     const { duration } = timers.focus;
 
