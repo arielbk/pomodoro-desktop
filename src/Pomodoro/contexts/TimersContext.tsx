@@ -75,8 +75,10 @@ export const TimersProvider: React.FC<{
   // timer function called every second while timer is on
   const timerFunc = () => {
     // clone active timer
-
     const timer = { ...activeTimer };
+
+    // mae sure timer is set up
+    if (!timer.untilTime) return;
 
     // if timer ends
     if (timer.timeRemaining < 250) {
@@ -119,18 +121,22 @@ export const TimersProvider: React.FC<{
   const handlePlayPause = () => {
     const timer = { ...activeTimer };
 
-    // pause or play the timer depending on current state
-    if (timer.paused) {
-      timer.untilTime = Date.now() + timer.timeRemaining;
-      timer.intervalID = setInterval(() => timerFunc(), 50);
-    } else {
-      clearInterval(timer.intervalID);
-    }
-
     timer.paused = !timer.paused;
 
     setActiveTimer(timer);
   };
+
+  useEffect(() => {
+    // if timer is paused, do nothing
+    if (activeTimer.paused) return;
+
+    // if timer is not paused, start it
+    const timer = { ...activeTimer };
+    timer.untilTime = Date.now() + timer.timeRemaining;
+    timer.intervalID = setInterval(timerFunc, 50);
+
+    setActiveTimer(timer);
+  }, [activeTimer.paused]);
 
   // default back to focus timer
   const handleReset = () => {
