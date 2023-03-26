@@ -26,7 +26,6 @@ const View = () => {
         <TimersProvider>
           <Container>
             <MainContent>
-              {/* actual (non-styled) components */}
               <ButtonProgress />
               <ShowTime />
               <Counters />

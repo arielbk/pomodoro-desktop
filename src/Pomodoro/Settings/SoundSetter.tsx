@@ -2,8 +2,7 @@ import React from "react";
 import { FaVolumeUp } from "react-icons/fa";
 import styled from "styled-components";
 import { useSounds } from "../contexts/SoundsContext";
-import { useTimers } from "../contexts/TimersContext";
-import { TimerName } from "../TimersContext";
+import { TimerName, useTimers } from "../contexts/TimersContext";
 import { SettingsItem } from "./Styles";
 
 interface Props {
