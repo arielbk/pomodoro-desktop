@@ -77,8 +77,10 @@ export const TimersProvider: React.FC<{
     // make sure timer is set up
     if (!activeTimer.untilTime) return;
 
+    const timeRemaining = Math.round(activeTimer.untilTime - Date.now());
+
     // if timer ends
-    if (activeTimer.timeRemaining < 250) {
+    if (timeRemaining < 250) {
       onTimerEnd();
       return;
     }
@@ -86,13 +88,12 @@ export const TimersProvider: React.FC<{
     // set new state
     setActiveTimer((prev) => ({
       ...prev,
-      timeRemaining: Math.round(activeTimer.untilTime - Date.now()),
+      timeRemaining,
     }));
   };
 
   const onTimerEnd = async () => {
-    const timer = { ...activeTimer };
-    clearInterval(timer.intervalID);
+    clearInterval(activeTimer.intervalID);
 
     playSound(timers[activeTimer.name].sound);
 
@@ -108,12 +109,14 @@ export const TimersProvider: React.FC<{
       nextTimer = "focus";
     }
 
-    timer.name = nextTimer;
-    timer.duration = timers[nextTimer].duration;
-    timer.timeRemaining = timers[nextTimer].duration;
-    timer.paused = true;
-
-    setActiveTimer(timer);
+    setActiveTimer({
+      name: nextTimer,
+      timeRemaining: timers[nextTimer].duration,
+      duration: timers[nextTimer].duration,
+      paused: true,
+      untilTime: 0,
+      intervalID: 0 as unknown as NodeJS.Timer,
+    });
   };
 
   const handlePlayPause = () => {
@@ -135,7 +138,7 @@ export const TimersProvider: React.FC<{
     // if timer is not paused, start it
     const timer = { ...activeTimer };
 
-    timer.intervalID = setInterval(timerFunc, 50);
+    timer.intervalID = setInterval(() => timerFunc(), 50);
 
     setActiveTimer(timer);
   }, [activeTimer.paused]);
