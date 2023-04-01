@@ -22,7 +22,6 @@ type TimersValues = {
   };
   timers: Record<TimerName, TimerType>;
   timerFunc: () => void;
-  onTimerEnd: () => void;
   handlePlayPause: () => void;
   handleReset: () => void;
   handleSoundSelect: (timer: TimerName, newSound: any) => void;
@@ -45,19 +44,19 @@ export const TimersProvider: React.FC<{
 
   const [timers, setTimers] = useState({
     focus: {
-      duration: isDev ? 1500 : 1500000, // mseconds - 25 min default
+      duration: isDev ? 15000 : 1500000, // mseconds - 25 min default
       sound: "Triumph" as SoundType,
     } as TimerType,
 
     // BREAK TIMER
     break: {
-      duration: isDev ? 300 : 300000, // mseconds - 5 min default
+      duration: isDev ? 3000 : 300000, // mseconds - 5 min default
       sound: "Bell" as SoundType,
     } as TimerType,
 
     // LONG BREAK TIMER
     longBreak: {
-      duration: isDev ? 900 : 900000, // mseconds - 15 min default
+      duration: isDev ? 9000 : 900000, // mseconds - 15 min default
       sound: "Winning" as SoundType,
     } as TimerType,
   } as Record<TimerName, TimerType>);
@@ -79,18 +78,45 @@ export const TimersProvider: React.FC<{
 
     const timeRemaining = Math.round(activeTimer.untilTime - Date.now());
 
-    // if timer ends
-    if (timeRemaining < 250) {
-      onTimerEnd();
-      return;
-    }
-
     // set new state
     setActiveTimer((prev) => ({
       ...prev,
       timeRemaining,
     }));
   };
+
+  useEffect(() => {
+    const onTimerEnd = () => {
+      clearInterval(activeTimer.intervalID);
+
+      playSound(timers[activeTimer.name].sound);
+
+      let nextTimer: TimerName;
+      if (activeTimer.name === "focus") {
+        // incrementPomodoros();
+        if (pomodoros % pomodoroSet === 0) {
+          nextTimer = "longBreak";
+        } else {
+          nextTimer = "break";
+        }
+      } else {
+        nextTimer = "focus";
+      }
+
+      setActiveTimer({
+        name: nextTimer,
+        timeRemaining: timers[nextTimer].duration,
+        duration: timers[nextTimer].duration,
+        paused: true,
+        untilTime: 0,
+        intervalID: 0 as unknown as NodeJS.Timer,
+      });
+    };
+
+    if (activeTimer.timeRemaining < 250) {
+      onTimerEnd();
+    }
+  }, [activeTimer.timeRemaining]);
 
   const onTimerEnd = async () => {
     clearInterval(activeTimer.intervalID);
@@ -99,7 +125,7 @@ export const TimersProvider: React.FC<{
 
     let nextTimer: TimerName;
     if (activeTimer.name === "focus") {
-      incrementPomodoros();
+      // incrementPomodoros();
       if (pomodoros % pomodoroSet === 0) {
         nextTimer = "longBreak";
       } else {
@@ -181,7 +207,6 @@ export const TimersProvider: React.FC<{
         activeTimer,
         timers,
         timerFunc,
-        onTimerEnd,
         handlePlayPause,
         handleReset,
         handleSoundSelect,
