@@ -44,19 +44,19 @@ export const TimersProvider: React.FC<{
 
   const [timers, setTimers] = useState({
     focus: {
-      duration: isDev ? 15000 : 1500000, // mseconds - 25 min default
+      duration: isDev ? 1500 : 1500000, // mseconds - 25 min default
       sound: "Triumph" as SoundType,
     } as TimerType,
 
     // BREAK TIMER
     break: {
-      duration: isDev ? 3000 : 300000, // mseconds - 5 min default
+      duration: isDev ? 300 : 300000, // mseconds - 5 min default
       sound: "Bell" as SoundType,
     } as TimerType,
 
     // LONG BREAK TIMER
     longBreak: {
-      duration: isDev ? 9000 : 900000, // mseconds - 15 min default
+      duration: isDev ? 900 : 900000, // mseconds - 15 min default
       sound: "Winning" as SoundType,
     } as TimerType,
   } as Record<TimerName, TimerType>);
@@ -93,8 +93,8 @@ export const TimersProvider: React.FC<{
 
       let nextTimer: TimerName;
       if (activeTimer.name === "focus") {
-        // incrementPomodoros();
-        if (pomodoros % pomodoroSet === 0) {
+        incrementPomodoros();
+        if ((pomodoros + 1) % pomodoroSet === 0) {
           nextTimer = "longBreak";
         } else {
           nextTimer = "break";
@@ -118,33 +118,6 @@ export const TimersProvider: React.FC<{
     }
   }, [activeTimer.timeRemaining]);
 
-  const onTimerEnd = async () => {
-    clearInterval(activeTimer.intervalID);
-
-    playSound(timers[activeTimer.name].sound);
-
-    let nextTimer: TimerName;
-    if (activeTimer.name === "focus") {
-      // incrementPomodoros();
-      if (pomodoros % pomodoroSet === 0) {
-        nextTimer = "longBreak";
-      } else {
-        nextTimer = "break";
-      }
-    } else {
-      nextTimer = "focus";
-    }
-
-    setActiveTimer({
-      name: nextTimer,
-      timeRemaining: timers[nextTimer].duration,
-      duration: timers[nextTimer].duration,
-      paused: true,
-      untilTime: 0,
-      intervalID: 0 as unknown as NodeJS.Timer,
-    });
-  };
-
   const handlePlayPause = () => {
     const timer = { ...activeTimer };
 
@@ -155,7 +128,6 @@ export const TimersProvider: React.FC<{
   };
 
   useEffect(() => {
-    console.log({ paused: activeTimer.paused });
     if (activeTimer.paused) {
       clearInterval(activeTimer.intervalID);
       return;

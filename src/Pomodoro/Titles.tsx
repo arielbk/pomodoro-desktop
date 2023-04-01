@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import styled from "styled-components";
 import { useStats } from "./contexts/StatsContext";
 import { TimerName, useTimers } from "./contexts/TimersContext";
@@ -19,7 +18,7 @@ const FocusUnderline = () => {
       {Array.from({ length: pomodoroSet }).map((_, i) => (
         <Underline
           timer={activeTimer.name === "focus" ? "focus" : "default"}
-          active={i + 1 > pomodoros % pomodoroSet}
+          active={i + 1 <= pomodoros % pomodoroSet}
         />
       ))}
     </FocusTitleContainer>
@@ -37,10 +36,6 @@ const Titles = () => {
       <section>
         <Title active={activeTimer.name === "focus"}>focus</Title>
         <FocusUnderline />
-        {/* <Underline
-            timer="focus"
-            active={activeTimer.name === 'focus'}
-          /> */}
       </section>
       <section>
         <Title active={activeTimer.name === "longBreak"}>Long Break</Title>
