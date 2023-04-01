@@ -1,24 +1,20 @@
-import React from 'react';
-import styled from 'styled-components';
-import TimersContext from './TimersContext';
+import styled from "styled-components";
+import { useStats } from "./contexts/StatsContext";
 
 // displays pomodoros completed and pomodoro goal
 export default function Counters() {
+  const { pomodoros, goal } = useStats();
   return (
-    <TimersContext.Consumer>
-      {(context) => (
-        <span>
-          <Pomodoros>{context.state.pomodoros}</Pomodoros>
-          <Group>
-            <Goal>of {context.state.goal}</Goal>
-            <Text>
-              pomodori
-              <br /> today
-            </Text>
-          </Group>
-        </span>
-      )}
-    </TimersContext.Consumer>
+    <span>
+      <Pomodoros>{pomodoros}</Pomodoros>
+      <Group>
+        <Goal>of {goal}</Goal>
+        <Text>
+          pomodori
+          <br /> today
+        </Text>
+      </Group>
+    </span>
   );
 }
 

@@ -1,28 +1,26 @@
-import React from 'react';
-import TimersContext from '../TimersContext';
-import { SettingsItem, IncrementDecrement } from './Styles';
+import { useStats } from "../contexts/StatsContext";
+import { IncrementDecrement, SettingsItem } from "./Styles";
 
 // settings component - set a pomodoro goal
-const GoalSetter = () => (
-  <TimersContext.Consumer>
-    {(context) => (
-      <SettingsItem>
-        <IncrementDecrement
-          timer="focus"
-          onMouseDown={() => context.handleGoalChange(-1)}
-        >
-          –
-        </IncrementDecrement>
-        <div>Goal : {context.state.goal}</div>
-        <IncrementDecrement
-          timer="focus"
-          onMouseDown={() => context.handleGoalChange(+1)}
-        >
-          +
-        </IncrementDecrement>
-      </SettingsItem>
-    )}
-  </TimersContext.Consumer>
-);
+const GoalSetter = () => {
+  const { goal, handleGoalChange } = useStats();
+  return (
+    <SettingsItem>
+      <IncrementDecrement
+        timer="focus"
+        onMouseDown={() => handleGoalChange(goal - 1)}
+      >
+        –
+      </IncrementDecrement>
+      <div>Goal : {goal}</div>
+      <IncrementDecrement
+        timer="focus"
+        onMouseDown={() => handleGoalChange(goal + 1)}
+      >
+        +
+      </IncrementDecrement>
+    </SettingsItem>
+  );
+};
 
 export default GoalSetter;

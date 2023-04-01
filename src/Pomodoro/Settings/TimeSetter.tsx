@@ -1,36 +1,32 @@
-import React from 'react';
-import TimersContext, { TimerName } from '../TimersContext';
-import { SettingsItem, IncrementDecrement } from './Styles';
+import React from "react";
+import { useTimers } from "../contexts/TimersContext";
+import { TimerName } from "../TimersContext";
+import { IncrementDecrement, SettingsItem } from "./Styles";
 
 interface Props {
   timerName: TimerName;
 }
 
 const TimeSetter: React.FC<Props> = ({ timerName }) => {
+  const { timers, handleDurationChange } = useTimers();
   return (
-    <TimersContext.Consumer>
-      {(context) => (
-        <SettingsItem>
-          <IncrementDecrement
-            timer={timerName}
-            onMouseDown={() => context.handleDurationChange(timerName, -1)}
-          >
-            –
-          </IncrementDecrement>
+    <SettingsItem>
+      <IncrementDecrement
+        timer={timerName}
+        onMouseDown={() => handleDurationChange(timerName, -1)}
+      >
+        –
+      </IncrementDecrement>
 
-          <div>
-            {Math.floor(context.state[timerName].duration / 60 / 1000)} min
-          </div>
+      <div>{Math.floor(timers[timerName].duration / 60 / 1000)} min</div>
 
-          <IncrementDecrement
-            timer={timerName}
-            onMouseDown={() => context.handleDurationChange(timerName, 1)}
-          >
-            +
-          </IncrementDecrement>
-        </SettingsItem>
-      )}
-    </TimersContext.Consumer>
+      <IncrementDecrement
+        timer={timerName}
+        onMouseDown={() => handleDurationChange(timerName, 1)}
+      >
+        +
+      </IncrementDecrement>
+    </SettingsItem>
   );
 };
 
