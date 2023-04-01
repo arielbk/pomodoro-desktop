@@ -1,7 +1,6 @@
-import { useContext } from "react";
 import styled from "styled-components";
 import { useStats } from "./contexts/StatsContext";
-import TimersContext, { TimerName } from "./TimersContext";
+import { TimerName, useTimers } from "./contexts/TimersContext";
 
 const FocusTitleContainer = styled.div`
   width: 100%;
@@ -11,57 +10,43 @@ const FocusTitleContainer = styled.div`
 `;
 
 const FocusUnderline = () => {
-  const { state } = useContext(TimersContext);
+  const { activeTimer } = useTimers();
   const { pomodoros, pomodoroSet } = useStats();
 
   return (
     <FocusTitleContainer>
       {Array.from({ length: pomodoroSet }).map((_, i) => (
         <Underline
-          timer={state.activeTimer.name === "focus" ? "focus" : "default"}
-          active={i + 1 > pomodoros % pomodoroSet}
+          timer={activeTimer.name === "focus" ? "focus" : "default"}
+          active={i + 1 <= pomodoros % pomodoroSet}
         />
       ))}
     </FocusTitleContainer>
   );
 };
 
-const Titles = () => (
-  <TimersContext.Consumer>
-    {(context) => (
-      <Container>
-        <section>
-          <Title active={context.state.activeTimer.name === "break"}>
-            Break
-          </Title>
-          <Underline
-            timer="break"
-            active={context.state.activeTimer.name === "break"}
-          />
-        </section>
-        <section>
-          <Title active={context.state.activeTimer.name === "focus"}>
-            focus
-          </Title>
-          <FocusUnderline />
-          {/* <Underline
-            timer="focus"
-            active={context.state.activeTimer.name === 'focus'}
-          /> */}
-        </section>
-        <section>
-          <Title active={context.state.activeTimer.name === "longBreak"}>
-            Long Break
-          </Title>
-          <Underline
-            timer="longBreak"
-            active={context.state.activeTimer.name === "longBreak"}
-          />
-        </section>
-      </Container>
-    )}
-  </TimersContext.Consumer>
-);
+const Titles = () => {
+  const { activeTimer } = useTimers();
+  return (
+    <Container>
+      <section>
+        <Title active={activeTimer.name === "break"}>Break</Title>
+        <Underline timer="break" active={activeTimer.name === "break"} />
+      </section>
+      <section>
+        <Title active={activeTimer.name === "focus"}>focus</Title>
+        <FocusUnderline />
+      </section>
+      <section>
+        <Title active={activeTimer.name === "longBreak"}>Long Break</Title>
+        <Underline
+          timer="longBreak"
+          active={activeTimer.name === "longBreak"}
+        />
+      </section>
+    </Container>
+  );
+};
 
 export default Titles;
 

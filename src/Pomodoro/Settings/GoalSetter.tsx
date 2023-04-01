@@ -1,7 +1,5 @@
-import React from "react";
 import { useStats } from "../contexts/StatsContext";
-import TimersContext from "../TimersContext";
-import { SettingsItem, IncrementDecrement } from "./Styles";
+import { IncrementDecrement, SettingsItem } from "./Styles";
 
 // settings component - set a pomodoro goal
 const GoalSetter = () => {

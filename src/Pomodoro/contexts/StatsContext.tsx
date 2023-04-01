@@ -10,6 +10,8 @@ interface StatsValues {
   incrementPomodoros: () => void;
 }
 
+const isDev = process.env.NODE_ENV === "development";
+
 export const StatsContext = createContext({} as StatsValues);
 
 // local pomodoros store
@@ -41,7 +43,7 @@ export const StatsProvider: React.FC<{
 
   const setStoredPomodoros = async () => {
     const todayKey = new Date().toDateString();
-    await store.set(todayKey, pomodoros);
+    await store.set(todayKey, isDev ? 0 : pomodoros);
   };
 
   useEffect(() => {

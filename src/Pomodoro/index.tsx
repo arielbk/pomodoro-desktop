@@ -4,13 +4,14 @@ import { FaCog, FaQuestion } from "react-icons/fa";
 import styled from "styled-components";
 import About from "./About";
 import ButtonProgress from "./ButtonProgress";
+import { SoundsProvider } from "./contexts/SoundsContext";
 import { StatsProvider } from "./contexts/StatsContext";
+import { TimersProvider } from "./contexts/TimersContext";
 import Counters from "./Counters";
 import "./global.css";
 import Modal from "./Modal";
 import Settings from "./Settings";
 import ShowTime from "./ShowTime";
-import { TimersProvider } from "./TimersContext";
 import Titles from "./Titles";
 import useToggle from "./useToggle";
 
@@ -21,32 +22,33 @@ const View = () => {
   const [settingsOpen, toggleSettingsOpen] = useToggle();
   return (
     <StatsProvider>
-      <TimersProvider>
-        <Container>
-          <MainContent>
-            {/* actual (non-styled) components */}
-            <ButtonProgress />
-            <ShowTime />
-            <Counters />
-          </MainContent>
+      <SoundsProvider>
+        <TimersProvider>
+          <Container>
+            <MainContent>
+              <ButtonProgress />
+              <ShowTime />
+              <Counters />
+            </MainContent>
 
-          <Titles />
+            <Titles />
 
-          {/* <AboutToggle onClick={toggleAboutOpen}>
+            {/* <AboutToggle onClick={toggleAboutOpen}>
           <FaQuestion />
           </AboutToggle>
           <Modal toggle={toggleAboutOpen} on={aboutOpen} from="left">
           <About />
         </Modal> */}
 
-          {/* <SettingsToggle onClick={toggleSettingsOpen}>
+            {/* <SettingsToggle onClick={toggleSettingsOpen}>
           <FaCog />
           </SettingsToggle>
           <Modal toggle={toggleSettingsOpen} on={settingsOpen} from="right">
           <Settings />
         </Modal> */}
-        </Container>
-      </TimersProvider>
+          </Container>
+        </TimersProvider>
+      </SoundsProvider>
     </StatsProvider>
   );
 };
