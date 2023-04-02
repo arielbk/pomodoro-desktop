@@ -3,71 +3,54 @@
 // This should be a common HOC for reuse, still haven't figured it out completely
 // And this still seems relatively clean...
 
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { IoMdPlay, IoMdPause, IoMdRefresh } from 'react-icons/io';
-import TimersContext, { TimersContextType, TimerName } from './TimersContext';
+import { useEffect } from "react";
+import { IoMdPause, IoMdPlay, IoMdRefresh } from "react-icons/io";
+import styled from "styled-components";
+import { useTimers } from "./contexts/TimersContext";
+import { TimerName } from "./TimersContext";
 
-class ButtonProgress extends Component<{ context: TimersContextType }> {
-  componentDidMount = () => {
-    document.addEventListener('keyup', this.handleKeyPress);
-  };
+const ButtonProgress = () => {
+  const { handlePlayPause, handleReset, activeTimer } = useTimers();
 
-  componentWillUnmount = () => {
-    document.removeEventListener('keyup', this.handleKeyPress);
-  };
+  useEffect(() => {
+    document.addEventListener("keyup", handleKeyPress);
 
-  handleKeyPress = (e: KeyboardEvent) => {
-    const { context } = this.props; // eslint-disable-line react/prop-types
-    const { handlePlayPause, handleReset } = context;
-    if (e.key === ' ') {
+    return () => document.removeEventListener("keyup", handleKeyPress);
+  }, []);
+
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.key === " ") {
       handlePlayPause();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleReset();
     }
   };
-  render() {
-    const { context } = this.props;
+  const strokeDashoffset =
+    Math.floor(
+      10 * ((activeTimer.timeRemaining / activeTimer.duration) * 395.8)
+    ) / 10;
 
-    const strokeDashoffset =
-      Math.floor(
-        10 *
-          ((context.state.activeTimer.timeRemaining /
-            context.state.activeTimer.duration) *
-            395.8)
-      ) / 10;
-
-    return (
-      <ButtonsContainer>
-        <StyledButtonProgress
-          timer={context.state.activeTimer.name}
-          onClick={context.handlePlayPause}
+  return (
+    <ButtonsContainer>
+      <StyledButtonProgress timer={activeTimer.name} onClick={handlePlayPause}>
+        <ProgressCircle timer={activeTimer.name}>
+          <circle r="63" strokeDashoffset={strokeDashoffset} />
+        </ProgressCircle>
+        <ButtonProgressInner
+          paused={activeTimer.paused}
+          timer={activeTimer.name}
         >
-          <ProgressCircle timer={context.state.activeTimer.name}>
-            <circle r="63" strokeDashoffset={strokeDashoffset} />
-          </ProgressCircle>
-          <ButtonProgressInner
-            paused={context.state.activeTimer.paused}
-            timer={context.state.activeTimer.name}
-          >
-            {context.state.activeTimer.paused ? <IoMdPlay /> : <IoMdPause />}
-          </ButtonProgressInner>
-        </StyledButtonProgress>
-        <ResetButton onClick={context.handleReset}>
-          <IoMdRefresh />
-        </ResetButton>
-      </ButtonsContainer>
-    );
-  }
-}
+          {activeTimer.paused ? <IoMdPlay /> : <IoMdPause />}
+        </ButtonProgressInner>
+      </StyledButtonProgress>
+      <ResetButton onClick={handleReset}>
+        <IoMdRefresh />
+      </ResetButton>
+    </ButtonsContainer>
+  );
+};
 
-const WithContext = () => (
-  <TimersContext.Consumer>
-    {(context) => <ButtonProgress context={context} />}
-  </TimersContext.Consumer>
-);
-
-export default WithContext;
+export default ButtonProgress;
 
 const ButtonsContainer = styled.button`
   background: transparent;
@@ -120,13 +103,13 @@ const ButtonProgressInner = styled.button<{
   border: none;
 
   background: var(--darkgrey);
-  color: ${(props) => 'var(--light-' + props.timer});
+  color: ${(props) => "var(--light-" + props.timer});
   width: 112px;
   height: 112px;
   border-radius: 100%;
   font-size: 1em;
   & {
-    ${(props) => props.paused && 'padding-left: 14px;'}
+    ${(props) => props.paused && "padding-left: 14px;"}
   }
 `;
 
@@ -139,7 +122,7 @@ const ProgressCircle = styled.svg<{ timer: TimerName }>`
   fill: transparent;
 
   & circle {
-    stroke:  ${(props) => 'var(--light-' + props.timer});
+    stroke:  ${(props) => "var(--light-" + props.timer});
     stroke-width: 14;
     cx: 70;
     cy: 70;
