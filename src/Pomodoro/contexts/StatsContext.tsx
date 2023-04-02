@@ -20,6 +20,7 @@ const store = new Store(".pomodori.dat");
 export const StatsProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
+  const [todayKey, setTodayKey] = useState(new Date().toDateString());
   const [pomodoros, setPomodoros] = useState(0);
   const [goal, setGoal] = useState(8);
   const [pomodoroSet, setPomodoroSet] = useState(4);
@@ -35,16 +36,29 @@ export const StatsProvider: React.FC<{
   };
 
   const getStoredPomodoros = async () => {
-    const todayKey = new Date().toDateString();
     const stored = await store.get(todayKey);
     if (!stored) return;
     setPomodoros(typeof stored === "number" ? stored : 0);
   };
 
   const setStoredPomodoros = async () => {
-    const todayKey = new Date().toDateString();
     await store.set(todayKey, isDev ? 0 : pomodoros);
   };
+
+  useEffect(() => {
+    const checkDate = () => {
+      const today = new Date().toDateString();
+      if (today !== todayKey) {
+        setTodayKey(today);
+      }
+    };
+    const interval = setInterval(checkDate, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    getStoredPomodoros();
+  }, [todayKey]);
 
   useEffect(() => {
     getStoredPomodoros();
