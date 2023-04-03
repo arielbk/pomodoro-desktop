@@ -9,7 +9,6 @@ async function loadSound(url: string) {
   return audioBuffer;
 }
 
-export type TimerName = "focus" | "break" | "longBreak";
 export type SoundType = "Bell" | "Triumph" | "LevelUp" | "Winning";
 
 interface SoundsValues {
