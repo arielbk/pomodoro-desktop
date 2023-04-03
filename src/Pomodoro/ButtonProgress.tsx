@@ -6,8 +6,7 @@
 import { useEffect } from "react";
 import { IoMdPause, IoMdPlay, IoMdRefresh } from "react-icons/io";
 import styled from "styled-components";
-import { useTimers } from "./contexts/TimersContext";
-import { TimerName } from "./TimersContext";
+import { TimerName, useTimers } from "./contexts/TimersContext";
 
 const ButtonProgress = () => {
   const { handlePlayPause, handleReset, activeTimer } = useTimers();
